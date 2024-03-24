@@ -5,6 +5,16 @@
 
 @if (Item != null)
 {
+    @if(WasItemPassedInUri)
+    {
+        <h3>Updating @Item.Name</h3>
+    }
+    else
+    {
+        <h3>Adding New Item</h3>
+    }
+
+
     <EditForm Model="@Item" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />

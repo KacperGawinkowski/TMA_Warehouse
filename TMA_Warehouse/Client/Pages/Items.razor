@@ -1,5 +1,7 @@
 ﻿@page "/items"
 @inherits ItemBase
+@using AntDesign;
+@using TMA_Warehouse.Shared.DTOs;
 
 @if(Items == null)
 {
@@ -13,47 +15,34 @@ else
         <button @onclick="@(() => AddItem())" class="btn btn-primary">Add Item</button>
     </h1>
 
-    <input type="text" @bind="@searchNameText" @oninput="@(() => SearchForItems())" placeholder="Search by name..." class="form-control mb-3" />
+    <input type="text" @oninput="@((value) => SearchForItems(value.Value.ToString()))" placeholder="Search by name..." class="form-control mb-3" />
 
 
     if (Items.Count() > 0)
     {
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    @foreach (var property in Properties)
-                    {
-                        if(!property.Name.Contains("Id"))
-                        {
-                            <th @onclick="@(() => Sort(property))">
-                                @property.Name
-                                @if (CurrentSortProperty == property)
-                                {
-                                    <i class="@(ascending ? "oi oi-arrow-top" : "oi oi-arrow-bottom")"></i>
-                                }
-                            </th>
-                        }
-                    }
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Items)
-                {
-                    <tr>
-                        @foreach (var property in Properties)
-                        {
-                            if (!property.Name.Contains("Id"))
-                            {
-                                <td>@property.GetValue(item)</td>
-                            }
-                        }
 
-                        <td><button class="btn btn-primary" @onclick="@(() => UpdateItem(item))">Update</button></td>
-                        <td><button class="btn btn-danger" @onclick="@(() => RemoveItem(item))">Remove</button></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <Table TItem="ItemDTO" DataSource="@Items">
+            <PropertyColumn Property="c=>c.Name" Title="Name" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.ItemGroupName" Title="Item Group" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.UnitOfMeasurementName" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.Quantity" Title="Quantity" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.PriceWithoutVAT" Title="Price" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.Status" Title="Status" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.StorageLocation" Title="Storage Location" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.ContantPerson" Title="Contact Person" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.Photo" Title="Photo"></PropertyColumn>
+
+            <ActionColumn Title="Action">
+                <Space Size=@("middle")>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>UpdateItem(context)">Update</Button>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Button Danger OnClick="()=>RemoveItem(context)">Delete</Button>
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
+
+        </Table>
     }
 }

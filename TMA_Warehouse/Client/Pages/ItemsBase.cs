@@ -2,10 +2,15 @@
 using System.Reflection;
 using TMA_Warehouse.Shared.DTOs;
 using System.Net.Http.Json;
+using System.Net.NetworkInformation;
+using AntDesign.Core.Extensions;
+using AntDesign.TableModels;
+using AntDesign;
+using System;
 
 namespace TMA_Warehouse.Client.Pages
 {
-    public class ItemsBase:ComponentBase
+    public class ItemBase : ComponentBase
     {
         [Inject]
         internal ItemService ItemService { get; set; }
@@ -14,7 +19,7 @@ namespace TMA_Warehouse.Client.Pages
         internal NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        internal HttpClient Http{ get; set; }
+        internal HttpClient Http { get; set; }
 
         internal IEnumerable<ItemDTO> Items { get; set; }
         internal PropertyInfo[] Properties = typeof(ItemDTO).GetProperties();
@@ -68,14 +73,30 @@ namespace TMA_Warehouse.Client.Pages
             NavigationManager.NavigateTo("additem");
         }
 
-        internal async void SearchForItems()
+        internal async void SearchForItems(string str)
         {
             Items = await ItemService.GetItems();
-            if (!string.IsNullOrEmpty(searchNameText))
+            if (!string.IsNullOrEmpty(str))
             {
-                Items = Items.Where(x => x.Name.ToLower().StartsWith(searchNameText.ToLower()));
+                Items = Items.Where(x => x.Name.ToLower().StartsWith(str.ToLower()));
             }
             StateHasChanged();
+        }
+
+        internal void definitions(string propertyName, object column)
+        {
+            bool setSortable = true;
+            bool setFilterable = true;
+
+            if(propertyName == "Photo")
+            {
+                setSortable = false;
+                setFilterable = false;
+            }
+
+
+            column.SetValue("Sortable", setSortable);
+            column.SetValue("Filterable", setFilterable);
         }
     }
 }
