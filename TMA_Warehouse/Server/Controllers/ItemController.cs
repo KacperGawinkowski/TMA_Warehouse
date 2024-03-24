@@ -24,26 +24,96 @@ namespace TMA_Warehouse.Server.Controllers
 
         [HttpGet]
         [Route("GetItems")]
-        public async Task<IEnumerable<ItemDTO>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetItems()
         {
-            IEnumerable<Item> items = await _itemRepository.GetItems();
-            IEnumerable<ItemGroup> itemGroups = await _itemGroupRepository.GetItemGroups();
-            IEnumerable<UnitOfMeasurement> unitsOfMeasure = await _unitOfMeasureRepository.GetUnitsOfMeasurements();
+            try
+            {
+                IEnumerable<Item> items = await _itemRepository.GetItems();
+                IEnumerable<ItemGroup> itemGroups = await _itemGroupRepository.GetItemGroups();
+                IEnumerable<UnitOfMeasurement> unitsOfMeasure = await _unitOfMeasureRepository.GetUnitsOfMeasurements();
 
-            return items.ConvertToDto(itemGroups, unitsOfMeasure);
+                if (items == null || itemGroups == null || unitsOfMeasure == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var itemDtos = items.ConvertToDto(itemGroups, unitsOfMeasure);
+                    return Ok(itemDtos);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,"Error retrieving data from the database");
+            }
         }
 
         [HttpGet]
         [Route("GetItem/{id}")]
-        public async Task<ItemDTO> GetItem(int id)
+        public async Task<ActionResult<ItemDTO>> GetItem(int id)
         {
-            //IEnumerable<Item> items = await _itemRepository.GetItems();
-            //IEnumerable<ItemGroup> itemGroups = await _itemGroupRepository.GetItemGroups();
-            //IEnumerable<UnitOfMeasurement> unitsOfMeasure = await _unitOfMeasureRepository.GetUnitsOfMeasurements();
+            try
+            {
+                Item item = await _itemRepository.GetItem(id);
+                IEnumerable<ItemGroup> itemGroups = await _itemGroupRepository.GetItemGroups();
+                IEnumerable<UnitOfMeasurement> unitsOfMeasure = await _unitOfMeasureRepository.GetUnitsOfMeasurements();
 
-            //return items.ConvertToDto(itemGroups, unitsOfMeasure);
+                if (item == null || itemGroups == null || unitsOfMeasure == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var itemDto = item.ConvertToDto(itemGroups, unitsOfMeasure);
+                    return Ok(itemDto);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
+            }
+        }
 
-            return null;
+        [HttpPost]
+        [Route("AddItem")]
+        public async Task<IActionResult> AddItem([FromBody] Item item)
+        {
+            if (item == null) return new StatusCodeResult(400);
+
+            _itemRepository.AddItem(item);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("UpdateItem/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] Item item)
+        {
+            try
+            {
+                await _itemRepository.UpdateItem(id, item);
+                var updatedItem = await GetItem(id);
+                return Ok(updatedItem);
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(404);
+            }
+        }
+
+
+        [HttpDelete]
+        [Route("RemoveItem/{id}")]
+        public async Task<IActionResult> RemovItem(int id)
+        {
+            try
+            {
+                await _itemRepository.RemoveItem(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(404);
+            }
         }
     }
 }

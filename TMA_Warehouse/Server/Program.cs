@@ -17,7 +17,6 @@ builder.Services.AddSqlServer<Context>(builder.Configuration.GetConnectionString
 builder.Services.AddScoped<ItemGroupRepository>();
 builder.Services.AddScoped<UnitOfMeasureRepository>();
 builder.Services.AddScoped<ItemRepository>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

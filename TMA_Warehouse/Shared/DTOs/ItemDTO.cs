@@ -11,7 +11,9 @@ namespace TMA_Warehouse.Shared.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ItemGroupName { get; set; }
+        public int ItemGroupId { get; set; }
+        public string ItemGroupName{ get; set; }
+        public int UnitOfMeasurementId { get; set; }
         public string UnitOfMeasurementName { get; set; }
         public double Quantity { get; set; }
         public decimal PriceWithoutVAT { get; set; }

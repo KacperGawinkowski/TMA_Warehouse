@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMA_Warehouse.Server", "TMA_Warehouse\Server\TMA_Warehouse.Server.csproj", "{7AF4F319-EA63-4521-A045-5E7AE1280B66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMA_Warehouse.Server", "TMA_Warehouse\Server\TMA_Warehouse.Server.csproj", "{7AF4F319-EA63-4521-A045-5E7AE1280B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMA_Warehouse.Client", "TMA_Warehouse\Client\TMA_Warehouse.Client.csproj", "{0670AD41-949B-4632-B307-389CBE1283DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMA_Warehouse.Client", "TMA_Warehouse\Client\TMA_Warehouse.Client.csproj", "{0670AD41-949B-4632-B307-389CBE1283DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMA_Warehouse.Shared", "TMA_Warehouse\Shared\TMA_Warehouse.Shared.csproj", "{46169B8A-F761-4D6D-8359-9450893BCE2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMA_Warehouse.Shared", "TMA_Warehouse\Shared\TMA_Warehouse.Shared.csproj", "{46169B8A-F761-4D6D-8359-9450893BCE2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

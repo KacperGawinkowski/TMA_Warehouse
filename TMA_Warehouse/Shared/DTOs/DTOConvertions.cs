@@ -7,7 +7,7 @@ using TMA_Warehouse.Shared.Models;
 
 namespace TMA_Warehouse.Shared.DTOs
 {
-    public static class DTOContertions
+    public static class DTOConvertions
     {
         public static IEnumerable<ItemDTO> ConvertToDto(this IEnumerable<Item> items, IEnumerable<ItemGroup> itemGroups, IEnumerable<UnitOfMeasurement> unitsOfMeasurements)
         {
@@ -18,7 +18,9 @@ namespace TMA_Warehouse.Shared.DTOs
                     {
                         Id = item.Id,
                         Name = item.Name,
+                        ItemGroupId = itemGroup.Id,
                         ItemGroupName = itemGroup.Name,
+                        UnitOfMeasurementId = unitOfMeasurement.Id,
                         UnitOfMeasurementName = unitOfMeasurement.Name,
                         Quantity = item.Quantity,
                         PriceWithoutVAT = item.PriceWithoutVAT,
@@ -27,6 +29,12 @@ namespace TMA_Warehouse.Shared.DTOs
                         ContantPerson = item.ContantPerson,
                         Photo = item.PhotoURL
                     }).ToList();
+        }
+
+        public static ItemDTO ConvertToDto(this Item item, IEnumerable<ItemGroup> itemGroups, IEnumerable<UnitOfMeasurement> unitsOfMeasurements)
+        {
+            var items = new List<Item> { item };
+            return ConvertToDto(items, itemGroups, unitsOfMeasurements).First();
         }
     }
 }

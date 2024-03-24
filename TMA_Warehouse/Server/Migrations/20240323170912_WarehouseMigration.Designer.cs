@@ -11,7 +11,7 @@ using TMA_Warehouse.Server;
 namespace TMA_Warehouse.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240323155742_WarehouseMigration")]
+    [Migration("20240323170912_WarehouseMigration")]
     partial class WarehouseMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
