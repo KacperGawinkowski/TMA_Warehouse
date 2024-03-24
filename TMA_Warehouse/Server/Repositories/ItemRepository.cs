@@ -26,7 +26,7 @@ namespace TMA_Warehouse.Server.Repositories
         {
             if (item == null) throw new ArgumentNullException();
 
-            item.Id = context.Items.ToList().Count + 1;
+            //item.Id = context.Items.ToList().Count + 1;
             context.Items.Add(item);
             context.SaveChanges();
         }

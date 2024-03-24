@@ -1,4 +1,6 @@
-﻿namespace TMA_Warehouse.Shared.Models
+﻿using TMA_Warehouse.Shared.DTOs;
+
+namespace TMA_Warehouse.Shared.Models
 {
     public class Item
     {
@@ -14,5 +16,24 @@
         public string? StorageLocation { get; set; }
         public string? ContantPerson { get; set; }
         public string? PhotoURL { get; set; }
+
+        public Item()
+        {
+
+        }
+
+        public Item(ItemDTO itemDTO)
+        {
+            //Id = itemDTO.Id;
+            Name = itemDTO.Name;
+            ItemGroupId = itemDTO.ItemGroupId;
+            UnitOfMeasurementId = itemDTO.UnitOfMeasurementId;
+            Quantity = itemDTO.Quantity;
+            PriceWithoutVAT = itemDTO.PriceWithoutVAT;
+            Status = itemDTO.Status;
+            StorageLocation = itemDTO.StorageLocation;
+            ContantPerson = itemDTO.ContantPerson;
+            PhotoURL = itemDTO.Photo;
+        }
     }
 }

@@ -1,9 +1,12 @@
 ﻿@page "/addItem"
 @inherits ItemFormBase
+@using AntDesign;
+@using TMA_Warehouse.Shared.DTOs;
+@using TMA_Warehouse.Shared.Models
 
 <PageTitle>Item Form</PageTitle>
 
-@if (Item != null)
+@if (Item != null && ItemGroups != null && UnitsOfMeasurements != null)
 {
     @if(WasItemPassedInUri)
     {
@@ -14,54 +17,71 @@
         <h3>Adding New Item</h3>
     }
 
+    <Form Model="@ItemFormModel" LabelColSpan="0" WrapperColSpan="0" Size="AntSizeLDSType.Default" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
-    <EditForm Model="@Item" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+        <FormItem Label="Item Name" Required>
+            <Input @bind-Value="@Item.Name" />
+        </FormItem>
 
-        <div class="form-group">
-            <label for="Name">Name</label>
-            <InputText id="Name" @bind-Value="Item.Name" class="form-control" />
-        </div>
+        <FormItem Label="Select" Required>
+            <Select TItem="ItemGroup"
+                    TItemValue="int"
+                    DataSource="@ItemGroups"
+                    @bind-Value="@Item.ItemGroupId"
+                    ValueName="@nameof(ItemGroup.Id)"
+                    LabelName="@nameof(ItemGroup.Name)"
+                    DefaultActiveFirstOption
+                    Style="width: 200px;"
+                    OnSelectedItemChanged="UpdateItemGroupName">
+                <ItemTemplate Context="itemGroupContext">
+                    <span>@((itemGroupContext as ItemGroup).Name)</span>
+                </ItemTemplate>
+            </Select>
+        </FormItem>
 
-        <div class="form-group">
-            <label for="ItemGroupId">Item Group</label>
-            <select id="ItemGroupId" @bind="@Item.ItemGroupId" class="form-control">
-                <option value="">Select Item Group</option>
-                @foreach (var group in ItemGroups)
-                {
-                    <option value="@group.Id">@group.Name</option>
-                }
-            </select>
-        </div>
+        <FormItem Label="Select" Required>
+            <Select TItem="UnitOfMeasurement"
+                    TItemValue="int"
+                    DataSource="@UnitsOfMeasurements"
+                    @bind-Value="@Item.UnitOfMeasurementId"
+                    ValueName="@nameof(UnitOfMeasurement.Id)"
+                    LabelName="@nameof(UnitOfMeasurement.Name)"
+                    DefaultActiveFirstOption
+                    Style="width: 200px;"
+                    OnSelectedItemChanged="UpdateUnitOfMeasurementName">
+                <ItemTemplate Context="unitsOfMeasurement">
+                    <span>@((unitsOfMeasurement as UnitOfMeasurement).Name)</span>
+                </ItemTemplate>
+            </Select>
+        </FormItem>
 
-        <div class="form-group">
-            <label for="Quantity">Quantity</label>
-            <InputNumber id="Quantity" @bind-Value="Item.Quantity" class="form-control" />
-        </div>
+        <FormItem Label="Quantity" Required>
+            <AntDesign.InputNumber @bind-Value="@Item.Quantity" />
+        </FormItem>
 
-        <div class="form-group">
-            <label for="PriceWithoutVAT">Price Without VAT</label>
-            <InputNumber id="PriceWithoutVAT" @bind-Value="Item.PriceWithoutVAT" class="form-control" />
-        </div>
+        <FormItem Label="Price" Required>
+            <AntDesign.InputNumber @bind-Value="@Item.PriceWithoutVAT" />
+        </FormItem>
 
-        <div class="form-group">
-            <label for="Status">Status</label>
-            <InputText id="Status" @bind-Value="Item.Status" class="form-control" />
-        </div>
+        <FormItem Label="Status" Required>
+            <Input @bind-Value="@Item.Status" />
+        </FormItem>
 
-        <div class="form-group">
-            <label for="StorageLocation">Storage Location</label>
-            <InputText id="StorageLocation" @bind-Value="Item.StorageLocation" class="form-control" />
-        </div>
+        <FormItem Label="Storage Location">
+            <Input @bind-Value="@Item.StorageLocation" />
+        </FormItem>
 
-        <div class="form-group">
-            <label for="ContantPerson">Contact Person</label>
-            <InputText id="ContantPerson" @bind-Value="Item.ContantPerson" class="form-control" />
-        </div>
+        <FormItem Label="Contact person" >
+            <TextArea @bind-Value="@Item.ContantPerson" />
+        </FormItem>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-    </EditForm>
+        <FormItem WrapperColOffset="8" WrapperColSpan="16">
+            <Button HtmlType="submit">
+                @ApplyButtonText
+            </Button>
+        </FormItem>
+
+    </Form>
 }
 else
 {

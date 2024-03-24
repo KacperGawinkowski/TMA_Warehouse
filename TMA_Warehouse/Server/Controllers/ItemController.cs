@@ -2,6 +2,7 @@
 using TMA_Warehouse.Server.Repositories;
 using TMA_Warehouse.Shared.Models;
 using TMA_Warehouse.Shared.DTOs;
+using TMA_Warehouse.Client.Pages;
 
 namespace TMA_Warehouse.Server.Controllers
 {
@@ -76,21 +77,21 @@ namespace TMA_Warehouse.Server.Controllers
 
         [HttpPost]
         [Route("AddItem")]
-        public async Task<IActionResult> AddItem([FromBody] Item item)
+        public async Task<IActionResult> AddItem([FromBody] ItemDTO itemDto)
         {
-            if (item == null) return new StatusCodeResult(400);
+            if (itemDto == null) return new StatusCodeResult(400);
 
-            _itemRepository.AddItem(item);
+            _itemRepository.AddItem(new Item(itemDto));
             return Ok();
         }
 
         [HttpPut]
         [Route("UpdateItem/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] Item item)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] ItemDTO itemDto)
         {
             try
             {
-                await _itemRepository.UpdateItem(id, item);
+                await _itemRepository.UpdateItem(id, new Item(itemDto));
                 var updatedItem = await GetItem(id);
                 return Ok(updatedItem);
             }
@@ -113,6 +114,30 @@ namespace TMA_Warehouse.Server.Controllers
             catch (Exception ex)
             {
                 return new StatusCodeResult(404);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetBiggestItemId")]
+        public async Task<ActionResult<int>> GetBiggestItemId()
+        {
+            try
+            {
+                IEnumerable<Item> items = await _itemRepository.GetItems();
+
+                if (items == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    int maxId = items.Max(x => x.Id);
+                    return Ok(maxId);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
             }
         }
     }
