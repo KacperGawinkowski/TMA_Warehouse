@@ -33,10 +33,17 @@ namespace TMA_Warehouse.Client.Pages
 
         internal ItemFormModel ItemFormModel;
 
+        internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message="Field is required" } };
+        internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
+        internal FormValidationRule[] QuantityRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m  } };
+
         protected override async Task OnInitializedAsync()
         {
             var uri = new Uri(NavigationManager.Uri);
             var queryParameters = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+            ItemGroups = await Http.GetFromJsonAsync<ItemGroup[]>($"api/ItemGroup/GetItemGroups");
+            UnitsOfMeasurements = await Http.GetFromJsonAsync<UnitOfMeasurement[]>($"api/UnitOfMeasurement/GetUnitsOfMeasurements");
 
             if (queryParameters.AllKeys.Contains("id") && !string.IsNullOrEmpty(queryParameters["id"]))
             {
@@ -48,12 +55,10 @@ namespace TMA_Warehouse.Client.Pages
             {
                 Item = new ItemDTO();
                 Item.Id = await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
-                Console.WriteLine("Biggest found Id = " + Item.Id);
+                Item.ItemGroupName = ItemGroups.FirstOrDefault().Name;
+                Item.UnitOfMeasurementName = UnitsOfMeasurements.FirstOrDefault().Name;
                 WasItemPassedInUri = false;
             }
-
-            ItemGroups = await Http.GetFromJsonAsync<ItemGroup[]>($"api/ItemGroup/GetItemGroups");
-            UnitsOfMeasurements = await Http.GetFromJsonAsync<UnitOfMeasurement[]>($"api/UnitOfMeasurement/GetUnitsOfMeasurements");
 
             ItemFormModel = new ItemFormModel(Item);
         }
@@ -114,12 +119,13 @@ namespace TMA_Warehouse.Client.Pages
             {
                 await AddItem();
             }
+            NavigationManager.NavigateTo($"/items");
         }
 
         internal void OnFinishFailed(EditContext editContext)
         {
-            Console.WriteLine("OnFinishFailed");
-            Console.WriteLine($"Failed:{JsonSerializer.Serialize(Item)}");
+            Console.WriteLine($"OnFinishFailed Failed:{JsonSerializer.Serialize(Item)}");
+            NavigationManager.NavigateTo($"/addItem?id={Item.Id}");
         }
 
         internal void UpdateItemGroupName()

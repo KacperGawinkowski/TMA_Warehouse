@@ -17,9 +17,9 @@
         <h3>Adding New Item</h3>
     }
 
-    <Form Model="@ItemFormModel" LabelColSpan="0" WrapperColSpan="0" Size="AntSizeLDSType.Default" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
+    <Form Model="@ItemFormModel" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
-        <FormItem Label="Item Name" Required>
+        <FormItem Label="Item Name" Required Rules=@RuleRequired>
             <Input @bind-Value="@Item.Name" />
         </FormItem>
 
@@ -31,7 +31,7 @@
                     ValueName="@nameof(ItemGroup.Id)"
                     LabelName="@nameof(ItemGroup.Name)"
                     DefaultActiveFirstOption
-                    Style="width: 200px;"
+                    @*Style="width: 200px;" *@
                     OnSelectedItemChanged="UpdateItemGroupName">
                 <ItemTemplate Context="itemGroupContext">
                     <span>@((itemGroupContext as ItemGroup).Name)</span>
@@ -47,7 +47,7 @@
                     ValueName="@nameof(UnitOfMeasurement.Id)"
                     LabelName="@nameof(UnitOfMeasurement.Name)"
                     DefaultActiveFirstOption
-                    Style="width: 200px;"
+                    @*Style="width: 200px;"*@
                     OnSelectedItemChanged="UpdateUnitOfMeasurementName">
                 <ItemTemplate Context="unitsOfMeasurement">
                     <span>@((unitsOfMeasurement as UnitOfMeasurement).Name)</span>
@@ -55,15 +55,15 @@
             </Select>
         </FormItem>
 
-        <FormItem Label="Quantity" Required>
+        <FormItem Label="Quantity" Required Rules=@QuantityRule>
             <AntDesign.InputNumber @bind-Value="@Item.Quantity" />
         </FormItem>
 
-        <FormItem Label="Price" Required>
+        <FormItem Label="Price" Required Rules=@MoneyRule>
             <AntDesign.InputNumber @bind-Value="@Item.PriceWithoutVAT" />
         </FormItem>
 
-        <FormItem Label="Status" Required>
+        <FormItem Label="Status" Required Rules=@RuleRequired>
             <Input @bind-Value="@Item.Status" />
         </FormItem>
 
@@ -75,8 +75,8 @@
             <TextArea @bind-Value="@Item.ContantPerson" />
         </FormItem>
 
-        <FormItem WrapperColOffset="8" WrapperColSpan="16">
-            <Button HtmlType="submit">
+        <FormItem WrapperColOffset="2" WrapperColSpan="4">
+            <Button Type="@ButtonType.Primary" HtmlType="submit">
                 @ApplyButtonText
             </Button>
         </FormItem>
