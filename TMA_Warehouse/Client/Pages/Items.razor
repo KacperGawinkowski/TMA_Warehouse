@@ -1,6 +1,7 @@
 ﻿@page "/items"
 @inherits ItemBase
 @using AntDesign;
+@using TMA_Warehouse.Client.Models
 @using TMA_Warehouse.Shared.DTOs;
 
 @if(Items == null)
@@ -21,7 +22,7 @@ else
     if (Items.Count() > 0)
     {
 
-        <Table TItem="ItemDTO" DataSource="@Items">
+        <Table TItem="ItemFrontendModel" DataSource="@Items">
             <PropertyColumn Property="c=>c.Name" Title="Name" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.ItemGroupName" Title="Item Group" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.UnitOfMeasurementName" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
@@ -29,8 +30,8 @@ else
             <PropertyColumn Property="c=>c.PriceWithoutVAT" Title="Price" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.Status" Title="Status" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.StorageLocation" Title="Storage Location" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.ContantPerson" Title="Contact Person" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.Photo" Title="Photo"></PropertyColumn>
+            <PropertyColumn Property="c=>c.ContactPerson" Title="Contact Person" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.PhotoURL" Title="Photo"></PropertyColumn>
 
             <ActionColumn Title="Action">
                 <Space Size=@("middle")>

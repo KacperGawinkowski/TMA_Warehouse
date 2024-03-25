@@ -33,7 +33,7 @@ namespace TMA_Warehouse.Shared.Models
             Status = itemDTO.Status;
             StorageLocation = itemDTO.StorageLocation;
             ContantPerson = itemDTO.ContantPerson;
-            PhotoURL = itemDTO.Photo;
+            PhotoURL = itemDTO.PhotoURL;
         }
     }
 }

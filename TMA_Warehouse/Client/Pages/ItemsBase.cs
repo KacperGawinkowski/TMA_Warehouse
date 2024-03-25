@@ -7,6 +7,7 @@ using AntDesign.Core.Extensions;
 using AntDesign.TableModels;
 using AntDesign;
 using System;
+using TMA_Warehouse.Client.Models;
 
 namespace TMA_Warehouse.Client.Pages
 {
@@ -21,7 +22,7 @@ namespace TMA_Warehouse.Client.Pages
         [Inject]
         internal HttpClient Http { get; set; }
 
-        internal IEnumerable<ItemDTO> Items { get; set; }
+        internal IEnumerable<ItemFrontendModel> Items { get; set; }
         internal PropertyInfo[] Properties = typeof(ItemDTO).GetProperties();
 
         internal PropertyInfo CurrentSortProperty;
@@ -34,37 +35,37 @@ namespace TMA_Warehouse.Client.Pages
             Items = await ItemService.GetItems();
         }
 
-        internal void Sort(PropertyInfo propertyInfo)
-        {
-            if (CurrentSortProperty == propertyInfo)
-            {
-                ascending = !ascending;
-            }
-            else
-            {
-                CurrentSortProperty = propertyInfo;
-                ascending = false;
-            }
+        //internal void Sort(PropertyInfo propertyInfo)
+        //{
+        //    if (CurrentSortProperty == propertyInfo)
+        //    {
+        //        ascending = !ascending;
+        //    }
+        //    else
+        //    {
+        //        CurrentSortProperty = propertyInfo;
+        //        ascending = false;
+        //    }
 
-            if (ascending)
-            {
-                Items = Items.OrderBy(item => CurrentSortProperty.GetValue(item)).ToArray();
-            }
-            else
-            {
-                Items = Items.OrderByDescending(item => CurrentSortProperty.GetValue(item)).ToArray();
-            }
-        }
+        //    if (ascending)
+        //    {
+        //        Items = Items.OrderBy(item => CurrentSortProperty.GetValue(item)).ToArray();
+        //    }
+        //    else
+        //    {
+        //        Items = Items.OrderByDescending(item => CurrentSortProperty.GetValue(item)).ToArray();
+        //    }
+        //}
 
-        internal async void UpdateItem(ItemDTO item)
+        internal async void UpdateItem(ItemFrontendModel item)
         {
             NavigationManager.NavigateTo($"/addItem?id={item.Id}");
         }
 
-        internal async void RemoveItem(ItemDTO item)
+        internal async void RemoveItem(ItemFrontendModel item)
         {
-            await Http.DeleteAsync($"Lists/Items/RemoveItem/{item.Id}");
-            Items = await Http.GetFromJsonAsync<ItemDTO[]>("Lists/Items/GetItems");
+            await Http.DeleteAsync($"Lists/Items/RemoveItem/{item.Id}"); //add delete to ItemService
+            Items = await ItemService.GetItems();
             StateHasChanged();
         }
 

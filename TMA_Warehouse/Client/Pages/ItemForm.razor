@@ -6,28 +6,28 @@
 
 <PageTitle>Item Form</PageTitle>
 
-@if (Item != null && ItemGroups != null && UnitsOfMeasurements != null)
+@if (ItemFrontendModel != null && ItemGroups != null && UnitsOfMeasurements != null)
 {
     @if(WasItemPassedInUri)
     {
-        <h3>Updating @Item.Name</h3>
+        <h3>Updating @ItemFrontendModel.Name</h3>
     }
     else
     {
         <h3>Adding New Item</h3>
     }
 
-    <Form Model="@ItemFormModel" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
+    <Form Model="@ItemFrontendModel" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
         <FormItem Label="Item Name" Required Rules=@RuleRequired>
-            <Input @bind-Value="@Item.Name" />
+            <Input @bind-Value="@ItemFrontendModel.Name" />
         </FormItem>
 
         <FormItem Label="Select" Required>
             <Select TItem="ItemGroup"
                     TItemValue="int"
                     DataSource="@ItemGroups"
-                    @bind-Value="@Item.ItemGroupId"
+                    @bind-Value="@ItemFrontendModel.ItemGroupId"
                     ValueName="@nameof(ItemGroup.Id)"
                     LabelName="@nameof(ItemGroup.Name)"
                     DefaultActiveFirstOption
@@ -43,7 +43,7 @@
             <Select TItem="UnitOfMeasurement"
                     TItemValue="int"
                     DataSource="@UnitsOfMeasurements"
-                    @bind-Value="@Item.UnitOfMeasurementId"
+                    @bind-Value="@ItemFrontendModel.UnitOfMeasurementId"
                     ValueName="@nameof(UnitOfMeasurement.Id)"
                     LabelName="@nameof(UnitOfMeasurement.Name)"
                     DefaultActiveFirstOption
@@ -56,23 +56,23 @@
         </FormItem>
 
         <FormItem Label="Quantity" Required Rules=@QuantityRule>
-            <AntDesign.InputNumber @bind-Value="@Item.Quantity" />
+            <AntDesign.InputNumber @bind-Value="@ItemFrontendModel.Quantity" />
         </FormItem>
 
         <FormItem Label="Price" Required Rules=@MoneyRule>
-            <AntDesign.InputNumber @bind-Value="@Item.PriceWithoutVAT" />
+            <AntDesign.InputNumber @bind-Value="@ItemFrontendModel.PriceWithoutVAT" />
         </FormItem>
 
         <FormItem Label="Status" Required Rules=@RuleRequired>
-            <Input @bind-Value="@Item.Status" />
+            <Input @bind-Value="@ItemFrontendModel.Status" />
         </FormItem>
 
         <FormItem Label="Storage Location">
-            <Input @bind-Value="@Item.StorageLocation" />
+            <Input @bind-Value="@ItemFrontendModel.StorageLocation" />
         </FormItem>
 
         <FormItem Label="Contact person" >
-            <TextArea @bind-Value="@Item.ContantPerson" />
+            <TextArea @bind-Value="@ItemFrontendModel.ContactPerson" />
         </FormItem>
 
         <FormItem WrapperColOffset="2" WrapperColSpan="4">

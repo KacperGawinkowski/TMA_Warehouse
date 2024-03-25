@@ -2,7 +2,6 @@
 using TMA_Warehouse.Server.Repositories;
 using TMA_Warehouse.Shared.Models;
 using TMA_Warehouse.Shared.DTOs;
-using TMA_Warehouse.Client.Pages;
 
 namespace TMA_Warehouse.Server.Controllers
 {
@@ -87,7 +86,7 @@ namespace TMA_Warehouse.Server.Controllers
 
         [HttpPut]
         [Route("UpdateItem/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] ItemDTO itemDto)
+        public async Task<IActionResult> UpdateItem(int id, [FromBody] ItemDTO itemDto)
         {
             try
             {

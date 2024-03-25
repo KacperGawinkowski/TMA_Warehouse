@@ -9,6 +9,8 @@ namespace TMA_Warehouse.Server
         public DbSet<ItemGroup> ItemGroups { get; set; }
         public DbSet<UnitOfMeasurement> UnitsOfMeasurements { get; set; }
         public DbSet<Item> Items { get; set; }
+        //public DbSet<Request> Requests { get; set; }
+        //public DbSet<RequestRow> RequestRows { get; set; }
 
         public Context(DbContextOptions options) : base(options)
         {
@@ -21,6 +23,8 @@ namespace TMA_Warehouse.Server
             OnCreateItemGroups(modelBuilder);
             OnCreateUnitsOfMeasurements(modelBuilder);
             OnCreateItems(modelBuilder);
+            //OnCreateRequests(modelBuilder);
+            //OnCreateRequestRows(modelBuilder);
         }
 
         private void OnCreateItemGroups(ModelBuilder modelBuilder)
@@ -205,8 +209,38 @@ namespace TMA_Warehouse.Server
                     PhotoURL = "electrical_wiring_image.jpg"
                 },
             };
-
             modelBuilder.Entity<Item>().HasData(items);
+        }
+
+        private void OnCreateRequests(ModelBuilder modelBuilder)
+        {
+            var requests = new List<Request>
+            {
+                new Request
+                {
+                    Id = 1,
+                    EmployeeName = "",
+                    ItemId = 1,
+                    UnitOfMeasurementId = 1,
+                    Quantity = 1,
+                    PriceWithoutVAT = 1,
+                    Comment = "",
+                    Status = ""
+                },
+                new Request
+                {
+                    Id = 2,
+                    EmployeeName = "",
+                    ItemId = 2,
+                    UnitOfMeasurementId = 2,
+                    Quantity = 2,
+                    PriceWithoutVAT = 1,
+                    Comment = "",
+                    Status = ""
+                }
+            };
+
+            modelBuilder.Entity<Request>().HasData(requests);
         }
     }
 }

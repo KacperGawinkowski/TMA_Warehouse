@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using TMA_Warehouse.Client.Models;
+using TMA_Warehouse.Client.Services;
 using TMA_Warehouse.Shared.DTOs;
 using TMA_Warehouse.Shared.Models;
 
@@ -18,6 +20,10 @@ namespace TMA_Warehouse.Client.Pages
     {
         [Inject]
         internal ItemService ItemService { get; set; }
+        [Inject]
+        internal ItemGroupService ItemGroupService { get; set; }
+        [Inject]
+        internal UnitOfMeasurementService UnitOfMeasurementService { get; set; }
 
         [Inject]
         internal NavigationManager NavigationManager { get; set; }
@@ -27,11 +33,11 @@ namespace TMA_Warehouse.Client.Pages
 
         internal bool WasItemPassedInUri;
         internal string ApplyButtonText => WasItemPassedInUri ? "Update Item" : "Add Item";
-        internal ItemDTO Item { get; set; }
+
         internal IEnumerable<ItemGroup> ItemGroups;
         internal IEnumerable<UnitOfMeasurement> UnitsOfMeasurements;
 
-        internal ItemFormModel ItemFormModel;
+        internal ItemFrontendModel ItemFrontendModel { get; set; }
 
         internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message="Field is required" } };
         internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
@@ -42,25 +48,21 @@ namespace TMA_Warehouse.Client.Pages
             var uri = new Uri(NavigationManager.Uri);
             var queryParameters = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
-            ItemGroups = await Http.GetFromJsonAsync<ItemGroup[]>($"api/ItemGroup/GetItemGroups");
-            UnitsOfMeasurements = await Http.GetFromJsonAsync<UnitOfMeasurement[]>($"api/UnitOfMeasurement/GetUnitsOfMeasurements");
+            ItemGroups = await ItemGroupService.GetItemGroups();
+            UnitsOfMeasurements = await UnitOfMeasurementService.GetUnitsOfMeasurements();
 
             if (queryParameters.AllKeys.Contains("id") && !string.IsNullOrEmpty(queryParameters["id"]))
             {
                 string itemId = queryParameters["id"];
-                Item = await Http.GetFromJsonAsync<ItemDTO>($"Lists/Items/GetItem/{itemId}");
-                WasItemPassedInUri = Item != null ? true : false;
+                ItemFrontendModel = await ItemService.GetItem(int.Parse(itemId));
+                WasItemPassedInUri = ItemFrontendModel != null ? true : false;
             }
             else
             {
-                Item = new ItemDTO();
-                Item.Id = await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
-                Item.ItemGroupName = ItemGroups.FirstOrDefault().Name;
-                Item.UnitOfMeasurementName = UnitsOfMeasurements.FirstOrDefault().Name;
+                ItemFrontendModel = new ItemFrontendModel();
+                ItemFrontendModel.Id = await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
                 WasItemPassedInUri = false;
             }
-
-            ItemFormModel = new ItemFormModel(Item);
         }
 
 
@@ -68,7 +70,7 @@ namespace TMA_Warehouse.Client.Pages
         {
             try
             {
-                HttpResponseMessage response = await Http.PutAsJsonAsync($"Lists/Items/UpdateItem/{Item.Id}", Item);
+                HttpResponseMessage response = await ItemService.UpdateItem(ItemFrontendModel.Id, ItemFrontendModel); 
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -77,7 +79,7 @@ namespace TMA_Warehouse.Client.Pages
                 }
                 else
                 {
-                    Console.WriteLine("Failed to update " + Item.Name);
+                    Console.WriteLine("Failed to update " + ItemFrontendModel.Name);
                 }
             }
             catch (Exception)
@@ -90,7 +92,7 @@ namespace TMA_Warehouse.Client.Pages
         {
             try
             {
-                HttpResponseMessage response = await Http.PostAsJsonAsync<ItemDTO>($"Lists/Items/AddItem", Item);
+                HttpResponseMessage response = await ItemService.AddItem(ItemFrontendModel);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -124,48 +126,20 @@ namespace TMA_Warehouse.Client.Pages
 
         internal void OnFinishFailed(EditContext editContext)
         {
-            Console.WriteLine($"OnFinishFailed Failed:{JsonSerializer.Serialize(Item)}");
-            NavigationManager.NavigateTo($"/addItem?id={Item.Id}");
+            Console.WriteLine($"OnFinishFailed Failed:{JsonSerializer.Serialize(ItemFrontendModel)}");
+            NavigationManager.NavigateTo($"/addItem?id={ItemFrontendModel.Id}");
         }
 
         internal void UpdateItemGroupName()
         {
-            Item.ItemGroupName = ItemGroups.First(x => x.Id == Item.ItemGroupId).Name;
+            ItemFrontendModel.ItemGroupName = ItemGroups.First(x => x.Id == ItemFrontendModel.ItemGroupId).Name;
         }
 
         internal void UpdateUnitOfMeasurementName()
         {
-            Item.UnitOfMeasurementName = UnitsOfMeasurements.First(x => x.Id == Item.UnitOfMeasurementId).Name;
+            ItemFrontendModel.UnitOfMeasurementName = UnitsOfMeasurements.First(x => x.Id == ItemFrontendModel.UnitOfMeasurementId).Name;
         }
     }
 
-    public class ItemFormModel
-    {
-        public string Size { get; set; } = AntSizeLDSType.Small;
-        public string ItemName { get; set; } = "";
-        public int ItemGroupId { get; set; }
-        public string ItemGroupName { get; set; } = "";
-        public int UnitOfMeasurementId { get; set; }
-        public string UnitOfMeasurementName { get; set; } = "";
-        public double Quantity { get; set; } = 1;
-        public decimal PriceWithoutVAT { get; set; } = 0m;
-        public string Status { get; set; } = "";
-        public string StorageLocation { get; set; } = "";
-        public string ContactPerson { get; set; } = "";
 
-
-        public ItemFormModel(ItemDTO item)
-        {
-            ItemName = item.Name;
-            ItemGroupId = item.ItemGroupId;
-            ItemGroupName = item.ItemGroupName;
-            UnitOfMeasurementId = item.UnitOfMeasurementId;
-            UnitOfMeasurementName = item.UnitOfMeasurementName;
-            Quantity = item.Quantity;
-            PriceWithoutVAT = item.PriceWithoutVAT;
-            Status = item.Status;
-            StorageLocation = item.StorageLocation;
-            ContactPerson = item.ContantPerson;
-        }
-    }
 }
