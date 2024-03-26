@@ -112,41 +112,6 @@ namespace WarehouseAPI.Controllers
             }
         }
 
-        //[HttpPut]
-        //[Route("UpdateItem/{id}")]
-        //public async Task<ActionResult> UpdateItem(int id, [FromBody] ItemDTO itemDto)
-        //{
-        //    try
-        //    {
-        //        Item existingItem = await context.Items.FindAsync(id);
-
-        //        if (existingItem == null)
-        //        {
-        //            return NotFound(id);
-        //        }
-
-        //        existingItem.Id = itemDto.Id;
-        //        existingItem.Name = itemDto.Name;
-        //        existingItem.ItemGroup = itemDto.ItemGroup;
-        //        existingItem.UnitOfMeasurement = itemDto.UnitOfMeasurement;
-        //        existingItem.Quantity = itemDto.Quantity;
-        //        existingItem.PriceWithoutVat = itemDto.PriceWithoutVat;
-        //        existingItem.Status = itemDto.Status;
-        //        existingItem.StorageLocation = itemDto.StorageLocation;
-        //        existingItem.ContactPerson = itemDto.ContactPerson;
-        //        existingItem.PhotoUrl = itemDto.PhotoUrl;
-
-        //        await context.SaveChangesAsync();
-
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred while updating the item: {ex.Message}");
-        //    }
-        //}
-
-
         [HttpDelete]
         [Route("RemoveOrder/{id}")]
         public async Task<ActionResult> RemoveOrder(int id)
@@ -169,29 +134,5 @@ namespace WarehouseAPI.Controllers
 
             return Ok();
         }
-
-        //[HttpGet]
-        //[Route("GetBiggestItemId")]
-        //public async Task<ActionResult<int>> GetBiggestItemId()
-        //{
-        //    try
-        //    {
-        //        IEnumerable<Item> items = await context.Items.ToListAsync();
-
-        //        if (items == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            int maxId = items.Max(x => x.Id);
-        //            return Ok(maxId);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
-        //    }
-        //}
     }
 }

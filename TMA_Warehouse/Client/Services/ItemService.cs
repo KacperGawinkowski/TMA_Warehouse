@@ -72,9 +72,11 @@ namespace TMA_Warehouse.Client.Services
             return await httpClient.DeleteAsync($"api/Item/RemoveItem/{itemDto.Id}");
         }
 
-        //public async Task<int> GetBiggestItemId()
-        //{
-        //    return await httpClient.GetFromJsonAsync<int>($"api/Item/GetBiggestItemId");
-        //}
+        public async Task<HttpResponseMessage> UpdateItemAmount(int id, float amount)
+        {
+            ItemDTO item = await GetItem(id);
+
+            return await httpClient.PutAsJsonAsync<float>($"api/Item/UpdateAmount/{id}", item.Quantity - amount);
+        }
     }
 }

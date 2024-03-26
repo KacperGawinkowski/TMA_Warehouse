@@ -9,6 +9,7 @@ namespace TMA_Warehouse.Client.Pages.Requests
     public class OrderBase : ComponentBase
     {
         [Inject] internal OrderService OrderService { get; set; }
+        [Inject] internal ItemService ItemService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
 
         internal IEnumerable<OrderDTO> Orders { get; set; }
@@ -34,9 +35,15 @@ namespace TMA_Warehouse.Client.Pages.Requests
 
         }
 
-        internal void ConfirmOrderButtonAction(OrderDTO order)
+        internal async void ConfirmOrderButtonAction(OrderDTO order)
         {
-
+            foreach (OrderedItemDTO orderedItem in order.OrderedItems) 
+            { 
+                await ItemService.UpdateItemAmount(orderedItem.ItemId, orderedItem.Quantity);
+                //await OrderService.RemoveOrder(order); //czy order ma sie usunąć po zatwierdzeniu???
+            }
+            Orders = await OrderService.GetOrders();
+            StateHasChanged();
         }
 
         internal async void SearchForItems(string str)

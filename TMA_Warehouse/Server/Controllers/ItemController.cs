@@ -67,7 +67,6 @@ namespace WarehouseAPI.Controllers
             try
             {
                 Item newItem = new Item{
-                    //Id = itemDto.Id,
                     Name = itemDto.Name,
                     ItemGroup = itemDto.ItemGroup,
                     UnitOfMeasurement = itemDto.UnitOfMeasurement,
@@ -96,14 +95,14 @@ namespace WarehouseAPI.Controllers
         {
             try
             {
-                Item existingItem = await context.Items.FindAsync(id);
+                Console.WriteLine("Balls");
+                Item existingItem = await context.Items.Where(x => x.Id == id).Include(x => x.OrderedItems).FirstOrDefaultAsync();
 
                 if (existingItem == null)
                 {
                     return NotFound(id);
                 }
 
-                //existingItem.Id = itemDto.Id;
                 existingItem.Name = itemDto.Name;
                 existingItem.ItemGroup = itemDto.ItemGroup;
                 existingItem.UnitOfMeasurement = itemDto.UnitOfMeasurement;
@@ -141,28 +140,22 @@ namespace WarehouseAPI.Controllers
             return Ok();
         }
 
-        //[HttpGet]
-        //[Route("GetBiggestItemId")]
-        //public async Task<ActionResult<int>> GetBiggestItemId()
-        //{
-        //    try
-        //    {
-        //        IEnumerable<Item> items = await context.Items.ToListAsync();
+        [HttpPut]
+        [Route("UpdateAmount/{id}")]
+        public async Task<ActionResult> UpdateAmount(int id, [FromBody] float amount)
+        {
+            Console.WriteLine(id + " " + amount);
 
-        //        if (items == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            int maxId = items.Max(x => x.Id);
-        //            return Ok(maxId);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
-        //    }
-        //}
+            Item itemActionResult = await context.Items.Where(x => x.Id == id).Include(x => x.OrderedItems).FirstOrDefaultAsync();
+            if (itemActionResult == null)
+            {
+                return NotFound();
+            }
+
+            itemActionResult.Quantity = amount;
+            await context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
