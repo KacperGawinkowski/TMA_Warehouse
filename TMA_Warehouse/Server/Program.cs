@@ -1,24 +1,11 @@
 using Microsoft.AspNetCore.ResponseCompression;
-using TMA_Warehouse.Server;
-using TMA_Warehouse.Server.Repositories;
+using WarehouseAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
-builder.Services.AddSqlServer<Context>(builder.Configuration.GetConnectionString("WarehouseConnection"), optionsAction: opt =>
-{
-    opt.EnableSensitiveDataLogging(true);
-});
-
-builder.Services.AddScoped<ItemGroupRepository>();
-builder.Services.AddScoped<UnitOfMeasureRepository>();
-builder.Services.AddScoped<ItemRepository>();
-//builder.Services.AddScoped<RequestRepository>();
-//builder.Services.AddScoped<RequestRowRepository>();
+builder.Services.AddDbContext<WarehouseContext>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

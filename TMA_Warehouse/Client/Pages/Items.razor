@@ -1,10 +1,10 @@
-﻿@page "/items"
-@inherits ItemBase
-@using AntDesign;
-@using TMA_Warehouse.Client.Models
-@using TMA_Warehouse.Shared.DTOs;
+﻿@page "/Lists/Items"
+@using AntDesign
+@using WarehouseApp.Pages
+@using global::Shared.DTOs
+@inherits ItemsBase
 
-@if(Items == null)
+@if (Items == null)
 {
     <h3>Loading Items...</h3>
 }
@@ -13,7 +13,7 @@ else
     <h3 class="mb-5">Items</h3>
 
     <h1>
-        <button @onclick="@(() => AddItem())" class="btn btn-primary">Add Item</button>
+        <button @onclick="@(() => AddItemButtonAction())" class="btn btn-primary">Add Item</button>
     </h1>
 
     <input type="text" @oninput="@((value) => SearchForItems(value.Value.ToString()))" placeholder="Search by name..." class="form-control mb-3" />
@@ -22,24 +22,27 @@ else
     if (Items.Count() > 0)
     {
 
-        <Table TItem="ItemFrontendModel" DataSource="@Items">
+        <Table TItem="ItemDTO" DataSource="@Items">
             <PropertyColumn Property="c=>c.Name" Title="Name" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.ItemGroupName" Title="Item Group" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.UnitOfMeasurementName" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.ItemGroup" Title="Item Group" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.UnitOfMeasurement" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.Quantity" Title="Quantity" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.PriceWithoutVAT" Title="Price" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.PriceWithoutVat" Title="Price" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.Status" Title="Status" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.StorageLocation" Title="Storage Location" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.ContactPerson" Title="Contact Person" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.PhotoURL" Title="Photo"></PropertyColumn>
+            <PropertyColumn Property="c=>c.PhotoUrl" Title="Photo"></PropertyColumn>
 
             <ActionColumn Title="Action">
                 <Space Size=@("middle")>
                     <SpaceItem>
-                        <Button Type="@ButtonType.Primary" OnClick="()=>UpdateItem(context)">Update</Button>
+                        <Button Danger OnClick="()=>OrderItemButtonAction(context)">Order</Button>
                     </SpaceItem>
                     <SpaceItem>
-                        <Button Danger OnClick="()=>RemoveItem(context)">Delete</Button>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>UpdateItemButtonAction(context)">Update</Button>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Button Danger OnClick="()=>RemoveItemButtonAction(context)">Delete</Button>
                     </SpaceItem>
                 </Space>
             </ActionColumn>

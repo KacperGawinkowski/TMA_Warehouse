@@ -2,6 +2,7 @@
 using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Shared.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -9,58 +10,45 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using TMA_Warehouse.Client.Models;
 using TMA_Warehouse.Client.Services;
-using TMA_Warehouse.Shared.DTOs;
-using TMA_Warehouse.Shared.Models;
 
 namespace TMA_Warehouse.Client.Pages
 {
     public class ItemFormBase : ComponentBase
     {
-        [Inject]
-        internal ItemService ItemService { get; set; }
-        [Inject]
-        internal ItemGroupService ItemGroupService { get; set; }
-        [Inject]
-        internal UnitOfMeasurementService UnitOfMeasurementService { get; set; }
+        [Inject] internal ItemService ItemService { get; set; }
 
-        [Inject]
-        internal NavigationManager NavigationManager { get; set; }
 
-        [Inject]
-        internal HttpClient Http { get; set; }
+        [Inject] internal NavigationManager NavigationManager { get; set; }
+
+        [Inject] internal HttpClient Http { get; set; }
+
+        internal ItemDTO ItemDTO { get; set; }
+
 
         internal bool WasItemPassedInUri;
         internal string ApplyButtonText => WasItemPassedInUri ? "Update Item" : "Add Item";
 
-        internal IEnumerable<ItemGroup> ItemGroups;
-        internal IEnumerable<UnitOfMeasurement> UnitsOfMeasurements;
-
-        internal ItemFrontendModel ItemFrontendModel { get; set; }
-
-        internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message="Field is required" } };
+        internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message = "Field is required" } };
         internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
-        internal FormValidationRule[] QuantityRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m  } };
+        internal FormValidationRule[] QuantityRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
 
         protected override async Task OnInitializedAsync()
         {
             var uri = new Uri(NavigationManager.Uri);
             var queryParameters = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
-            ItemGroups = await ItemGroupService.GetItemGroups();
-            UnitsOfMeasurements = await UnitOfMeasurementService.GetUnitsOfMeasurements();
-
             if (queryParameters.AllKeys.Contains("id") && !string.IsNullOrEmpty(queryParameters["id"]))
             {
                 string itemId = queryParameters["id"];
-                ItemFrontendModel = await ItemService.GetItem(int.Parse(itemId));
-                WasItemPassedInUri = ItemFrontendModel != null ? true : false;
+                ItemDTO = await ItemService.GetItem(int.Parse(itemId));
+                WasItemPassedInUri = ItemDTO != null ? true : false;
             }
             else
             {
-                ItemFrontendModel = new ItemFrontendModel();
-                ItemFrontendModel.Id = await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
+                ItemDTO = new ItemDTO();
+                ItemDTO.Id = await ItemService.GetBiggestItemId() + 1;   //await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
+
                 WasItemPassedInUri = false;
             }
         }
@@ -70,7 +58,7 @@ namespace TMA_Warehouse.Client.Pages
         {
             try
             {
-                HttpResponseMessage response = await ItemService.UpdateItem(ItemFrontendModel.Id, ItemFrontendModel); 
+                HttpResponseMessage response = await ItemService.UpdateItem(ItemDTO.Id, ItemDTO);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -79,7 +67,7 @@ namespace TMA_Warehouse.Client.Pages
                 }
                 else
                 {
-                    Console.WriteLine("Failed to update " + ItemFrontendModel.Name);
+                    Console.WriteLine("Failed to update " + ItemDTO.Name);
                 }
             }
             catch (Exception)
@@ -92,7 +80,7 @@ namespace TMA_Warehouse.Client.Pages
         {
             try
             {
-                HttpResponseMessage response = await ItemService.AddItem(ItemFrontendModel);
+                HttpResponseMessage response = await ItemService.AddItem(ItemDTO);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -121,23 +109,13 @@ namespace TMA_Warehouse.Client.Pages
             {
                 await AddItem();
             }
-            NavigationManager.NavigateTo($"/items");
+            NavigationManager.NavigateTo($"/Lists/Items");
         }
 
         internal void OnFinishFailed(EditContext editContext)
         {
-            Console.WriteLine($"OnFinishFailed Failed:{JsonSerializer.Serialize(ItemFrontendModel)}");
-            NavigationManager.NavigateTo($"/addItem?id={ItemFrontendModel.Id}");
-        }
-
-        internal void UpdateItemGroupName()
-        {
-            ItemFrontendModel.ItemGroupName = ItemGroups.First(x => x.Id == ItemFrontendModel.ItemGroupId).Name;
-        }
-
-        internal void UpdateUnitOfMeasurementName()
-        {
-            ItemFrontendModel.UnitOfMeasurementName = UnitsOfMeasurements.First(x => x.Id == ItemFrontendModel.UnitOfMeasurementId).Name;
+            Console.WriteLine($"OnFinishFailed Failed:{JsonSerializer.Serialize(ItemDTO)}");
+            NavigationManager.NavigateTo($"/addItem?id={ItemDTO.Id}");
         }
     }
 

@@ -1,90 +1,82 @@
-﻿using System.Net.Http.Json;
-using TMA_Warehouse.Client.Models;
-using TMA_Warehouse.Client.Services;
-using TMA_Warehouse.Shared.DTOs;
+﻿using Shared.DTOs;
+using System.Net.Http.Json;
 
-public class ItemService
+namespace TMA_Warehouse.Client.Services
 {
-    private readonly HttpClient httpClient;
-    private readonly ItemGroupService itemGroupService;
-    private readonly UnitOfMeasurementService unitOfMeasurementService;
-
-    public ItemService(HttpClient httpClient, ItemGroupService itemGroupService, UnitOfMeasurementService unitOfMeasurementService)
+    public class ItemService
     {
-        this.httpClient = httpClient;
-        this.itemGroupService = itemGroupService;
-        this.unitOfMeasurementService = unitOfMeasurementService;
-    }
-
-    public async Task<IEnumerable<ItemFrontendModel>> GetItems()
-    {
-        try
+        private readonly HttpClient httpClient;
+        public ItemService(HttpClient httpClient)
         {
-            var items = await httpClient.GetFromJsonAsync<IEnumerable<ItemDTO>>("Lists/Items/GetItems");
-            var itemGroups = await itemGroupService.GetItemGroups();
-            var unitsOfMeasurements = await unitOfMeasurementService.GetUnitsOfMeasurements();
+            this.httpClient = httpClient;
+        }
 
-            var result = items.Select(async item => new ItemFrontendModel
+        public async Task<IEnumerable<ItemDTO>> GetItems()
+        {
+            try
             {
-                Id = item.Id,
-                Name = item.Name,
-                ItemGroupId = item.ItemGroupId,
-                ItemGroupName = itemGroups.First(x => x.Id == item.ItemGroupId).Name,
-                UnitOfMeasurementId = item.UnitOfMeasurementId,
-                UnitOfMeasurementName = unitsOfMeasurements.First(x => x.Id == item.UnitOfMeasurementId).Name,
-                Quantity = item.Quantity,
-                PriceWithoutVAT = item.PriceWithoutVAT,
-                Status = item.Status,
-                StorageLocation = item.StorageLocation,
-                ContactPerson = item.ContantPerson,
-                PhotoURL = item.PhotoURL
-            });
+                var res = await httpClient.GetFromJsonAsync<IEnumerable<ItemDTO>>("api/Item/GetItems");
 
-            return await Task.WhenAll(result);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
+                Console.WriteLine($"Results length = {res?.Count() ?? 0}");
 
-    public async Task<ItemFrontendModel> GetItem(int id)
-    {
-        try
-        {
-            var item = await httpClient.GetFromJsonAsync<ItemDTO>($"Lists/Items/GetItem/{id}");
-            var itemGroups = await itemGroupService.GetItemGroups();
-            var unitsOfMeasurements = await unitOfMeasurementService.GetUnitsOfMeasurements();
-
-            return new ItemFrontendModel
+                return res;
+            }
+            catch (HttpRequestException ex)
             {
-                Id = item.Id,
-                Name = item.Name,
-                ItemGroupId = item.ItemGroupId,
-                ItemGroupName = itemGroups.First(x => x.Id == item.ItemGroupId).Name,
-                UnitOfMeasurementId = item.UnitOfMeasurementId,
-                UnitOfMeasurementName = unitsOfMeasurements.First(x => x.Id == item.UnitOfMeasurementId).Name,
-                Quantity = item.Quantity,
-                PriceWithoutVAT = item.PriceWithoutVAT,
-                Status = item.Status,
-                StorageLocation = item.StorageLocation,
-                ContactPerson = item.ContantPerson,
-                PhotoURL = item.PhotoURL
-            };
+                Console.WriteLine($"HTTP request failed: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                throw;
+            }
         }
-        catch (Exception)
+
+        public async Task<ItemDTO> GetItem(int id)
         {
-            throw;
+            try
+            {
+                return await httpClient.GetFromJsonAsync<ItemDTO>($"api/Item/GetItem/{id}");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
-    }
 
-    public async Task<HttpResponseMessage> UpdateItem(int id, ItemFrontendModel item)
-    {
-        return await httpClient.PutAsJsonAsync($"Lists/Items/UpdateItem/{id}", item.ConvertToItemDto());
-    }
+        public async Task<HttpResponseMessage> UpdateItem(int id, ItemDTO itemDto)
+        {
+            try
+            {
+                return await httpClient.PutAsJsonAsync($"api/Item/UpdateItem/{id}", itemDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-    public async Task<HttpResponseMessage> AddItem(ItemFrontendModel item)
-    {
-        return await httpClient.PostAsJsonAsync<ItemDTO>($"Lists/Items/AddItem", item.ConvertToItemDto());
+        public async Task<HttpResponseMessage> AddItem(ItemDTO itemDto)
+        {
+            try
+            {
+                return await httpClient.PostAsJsonAsync<ItemDTO>($"api/Item/AddItem", itemDto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<HttpResponseMessage> RemoveItem(ItemDTO itemDto)
+        {
+            return await httpClient.DeleteAsync($"api/Item/RemoveItem/{itemDto.Id}");
+        }
+
+        public async Task<int> GetBiggestItemId()
+        {
+            return await httpClient.GetFromJsonAsync<int>($"api/Item/GetBiggestItemId");
+        }
     }
 }

@@ -1,21 +1,14 @@
 ﻿@page "/addItem"
-@inherits ItemFormBase
+@inherits OrderItemFormBase
 @using AntDesign;
 
-<PageTitle>Item Form</PageTitle>
+<PageTitle>Order Item Form</PageTitle>
 
 @if (ItemDTO != null)
 {
-    @if(WasItemPassedInUri)
-    {
-        <h3>Updating @ItemDTO.Name</h3>
-    }
-    else
-    {
-        <h3>Adding New Item</h3>
-    }
+    <h3>Ordering @ItemDTO.Name</h3>
 
-    <Form Model="@ItemDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
+@*     <Form Model="@ItemDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
         <FormItem Label="Item Name" Required Rules=@RuleRequired>
             <Input @bind-Value="@ItemDTO.Name" />
@@ -40,7 +33,7 @@
         </FormItem>
 
         <FormItem Label="Quantity" Required Rules=@QuantityRule>
-            <AntDesign.InputNumber @bind-Value="@ItemDTO.Quantity" />
+            <AntDesign.InputNumber @bind-Value="@ItemDTO.Quantity" /> 
         </FormItem>
 
         <FormItem Label="Price" Required Rules=@MoneyRule>
@@ -65,7 +58,7 @@
             </Button>
         </FormItem>
 
-    </Form>
+    </Form> *@
 }
 else
 {

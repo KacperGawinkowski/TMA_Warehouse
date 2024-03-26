@@ -1,42 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using TMA_Warehouse.Shared.Models;
+using WarehouseAPI.Models;
 
-namespace TMA_Warehouse.Shared.DTOs
+namespace Shared.DTOs
 {
-    //public class ItemDTO
-    //{
-    //    public int Id { get; set; }
-    //    public string Name { get; set; }
-    //    public int ItemGroupId { get; set; }
-    //    public string ItemGroupName{ get; set; }
-    //    public int UnitOfMeasurementId { get; set; }
-    //    public string UnitOfMeasurementName { get; set; }
-    //    public double Quantity { get; set; }
-    //    public decimal PriceWithoutVAT { get; set; }
-    //    public string Status { get; set; }
-    //    public string? StorageLocation { get; set; }
-    //    public string? ContantPerson { get; set; }
-    //    public string? Photo { get; set; }
-
-
-    //}
-
     public class ItemDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int ItemGroupId { get; set; }
-        public int UnitOfMeasurementId { get; set; }
-        public double Quantity { get; set; }
-        public decimal PriceWithoutVAT { get; set; }
-        public string Status { get; set; }
+        public string Name { get; set; } = null!;
+        public string ItemGroup { get; set; } = null!;
+        public string UnitOfMeasurement { get; set; } = null!;
+        public float Quantity { get; set; }
+        public decimal PriceWithoutVat { get; set; }
+        public string Status { get; set; } = null!;
         public string? StorageLocation { get; set; }
-        public string? ContantPerson { get; set; }
-        public string? PhotoURL { get; set; }
+        public string? ContactPerson { get; set; }
+        public string? PhotoUrl { get; set; }
+
+        public ItemDTO()
+        {
+
+        }
+
+        public ItemDTO(Item item)
+        {
+            Id = item.Id;
+            Name = item.Name;
+            ItemGroup = item.ItemGroup;
+            UnitOfMeasurement = item.UnitOfMeasurement;
+            Quantity = item.Quantity;
+            PriceWithoutVat = item.PriceWithoutVat;
+            Status = item.Status;
+            StorageLocation = item.StorageLocation;
+            ContactPerson = item.ContactPerson;
+            PhotoUrl = item.PhotoUrl;
+        }
     }
 }
