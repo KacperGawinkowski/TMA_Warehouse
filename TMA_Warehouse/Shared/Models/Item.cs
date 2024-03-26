@@ -1,4 +1,8 @@
-﻿namespace TMA_Warehouse.Shared.Models
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace TMA_Warehouse.Shared.Models
 {
     public partial class Item
     {

@@ -84,12 +84,18 @@ namespace TMA_Warehouse.Server
                 entity.Property(e => e.EmployeeName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<OrderedItem>(entity =>
             {
-                entity.HasKey(e => new { e.ItemId, e.OrderId })
+                entity.HasKey(e => new { e.Id, e.ItemId, e.OrderId })
                     .HasName("OrderedItems_pk");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ItemId).HasColumnName("Item_ID");
 

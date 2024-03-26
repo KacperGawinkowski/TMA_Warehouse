@@ -47,5 +47,17 @@ namespace TMA_Warehouse.Client.Services
         {
             return await httpClient.DeleteAsync($"api/Order/RemoveOrder/{orderDto.Id}");
         }
+
+        public async Task<HttpResponseMessage> UpdateOrderStatus(int id, string status)
+        {
+            OrderDTO item = await GetOrder(id);
+
+            return await httpClient.PutAsJsonAsync<string>($"api/Order/ChangeOrderStatus/{id}", status);
+        }
+
+        public async Task<HttpResponseMessage> ConfirmOrder(int id, OrderDTO orderDto)
+        {
+            return await httpClient.PutAsJsonAsync<OrderDTO>($"api/Order/ConfirmOrder/{id}", orderDto);
+        }
     }
 }

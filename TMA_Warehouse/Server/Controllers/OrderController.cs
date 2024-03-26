@@ -1,7 +1,10 @@
 ﻿using AntDesign;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Text.Json;
+using TMA_Warehouse.Client.Pages.Requests;
+using TMA_Warehouse.Client.Services;
 using TMA_Warehouse.Server;
 using TMA_Warehouse.Shared.DTOs;
 using TMA_Warehouse.Shared.Models;
@@ -12,10 +15,12 @@ namespace WarehouseAPI.Controllers
     public class OrderController : Controller
     {
         private readonly WarehouseContext context;
+        private readonly ItemController itemController;
 
-        public OrderController(WarehouseContext context)
+        public OrderController(WarehouseContext context, ItemController itemController)
         {
             this.context = context;
+            this.itemController = itemController;
         }
 
         [HttpGet]
@@ -29,6 +34,7 @@ namespace WarehouseAPI.Controllers
                 Id = o.Id,
                 EmployeeName = o.EmployeeName,
                 Comment = o.Comment,
+                Status = o.Status,
                 OrderedItems = o.OrderedItems.Select(orderedItem => new OrderedItemDTO
                 {
                     ItemId = orderedItem.ItemId,
@@ -59,6 +65,7 @@ namespace WarehouseAPI.Controllers
                 Id = order.Id,
                 EmployeeName = order.EmployeeName,
                 Comment = order.Comment,
+                Status = order.Status,
                 OrderedItems = order.OrderedItems.Select(orderedItem => new OrderedItemDTO
                 {
                     ItemId = orderedItem.ItemId,
@@ -82,7 +89,8 @@ namespace WarehouseAPI.Controllers
                 Order newOrder = new Order
                 {
                     EmployeeName = orderDto.EmployeeName,
-                    Comment = orderDto.Comment
+                    Comment = orderDto.Comment,
+                    Status = orderDto.Status,
                 };
                 context.Orders.Add(newOrder);
 
@@ -133,6 +141,48 @@ namespace WarehouseAPI.Controllers
             await context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpPut]
+        [Route("ChangeOrderStatus/{id}")]
+        public async Task<ActionResult> ChangeOrderStatus(int id, [FromBody] string status)
+        {
+            Order orderToChange = await context.Orders.Where(x => x.Id == id).Include(x => x.OrderedItems).FirstOrDefaultAsync();
+
+            orderToChange.Status = status;
+
+            await context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("ConfirmOrder/{id}")]
+        public async Task<ActionResult> ConfirmOrder(int id, [FromBody] OrderDTO orderDto)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (OrderedItemDTO orderedItem in orderDto.OrderedItems)
+                    {
+                        await itemController.UpdateAmount(orderedItem.ItemId, orderedItem.Quantity);
+                    }
+
+                    await ChangeOrderStatus(id, "Aproved");
+
+                    await context.SaveChangesAsync();
+
+                    transaction.Commit();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    return StatusCode(500, $"An error occurred while adding the item: {ex.Message}");
+                }
+            }
         }
     }
 }

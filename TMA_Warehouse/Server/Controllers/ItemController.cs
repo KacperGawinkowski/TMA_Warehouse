@@ -144,8 +144,6 @@ namespace WarehouseAPI.Controllers
         [Route("UpdateAmount/{id}")]
         public async Task<ActionResult> UpdateAmount(int id, [FromBody] float amount)
         {
-            Console.WriteLine(id + " " + amount);
-
             Item itemActionResult = await context.Items.Where(x => x.Id == id).Include(x => x.OrderedItems).FirstOrDefaultAsync();
             if (itemActionResult == null)
             {

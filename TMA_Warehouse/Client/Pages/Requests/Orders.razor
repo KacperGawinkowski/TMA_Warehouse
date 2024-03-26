@@ -22,17 +22,21 @@ else
             <PropertyColumn Property="c=>c.EmployeeName" Title="Name" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.Comment" Title="Comment" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>GetTotalPrice(c)" Title="Total Price" Sortable Filterable></PropertyColumn>
+            <PropertyColumn Property="c=>c.Status" Title="Status" Sortable Filterable></PropertyColumn>
             <ActionColumn Title="Action">
                 <Space Size=@("middle")>
                     <SpaceItem>
                         <Button Type="@ButtonType.Primary" OnClick="()=>OrderDetailsButtonAction(context)">Details</Button>
                     </SpaceItem>
-                    <SpaceItem>
-                        <Button Type="@ButtonType.Primary" OnClick="()=>ConfirmOrderButtonAction(context)">Confirm</Button>
-                    </SpaceItem>
-                    <SpaceItem>
-                        <Button Danger OnClick="()=>RemoveOrderButtonAction(context)">Reject</Button>
-                    </SpaceItem>
+                    @if(context.Status == "New")
+                    {
+                        <SpaceItem>
+                            <Button Type="@ButtonType.Primary" OnClick="()=>ConfirmOrderButtonAction(context)">Confirm</Button>
+                        </SpaceItem>
+                        <SpaceItem>
+                            <Button Danger OnClick="()=>RejectOrderButtonAction(context)">Reject</Button>
+                        </SpaceItem>
+                    }
                 </Space>
             </ActionColumn>
 

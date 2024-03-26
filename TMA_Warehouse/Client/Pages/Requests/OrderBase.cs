@@ -27,9 +27,9 @@ namespace TMA_Warehouse.Client.Pages.Requests
         {
             
         }
-        internal async void RemoveOrderButtonAction(OrderDTO order)
+        internal async void RejectOrderButtonAction(OrderDTO order)
         {
-            await OrderService.RemoveOrder(order);
+            await OrderService.UpdateOrderStatus(order.Id, "Rejected");
             Orders = await OrderService.GetOrders();
             StateHasChanged();
 
@@ -37,11 +37,14 @@ namespace TMA_Warehouse.Client.Pages.Requests
 
         internal async void ConfirmOrderButtonAction(OrderDTO order)
         {
+            //TODO
+            //Turn this into a transaction
             foreach (OrderedItemDTO orderedItem in order.OrderedItems) 
             { 
                 await ItemService.UpdateItemAmount(orderedItem.ItemId, orderedItem.Quantity);
                 //await OrderService.RemoveOrder(order); //czy order ma sie usunąć po zatwierdzeniu???
             }
+            await OrderService.UpdateOrderStatus(order.Id, "Aproved");
             Orders = await OrderService.GetOrders();
             StateHasChanged();
         }

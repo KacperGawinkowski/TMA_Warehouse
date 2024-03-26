@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using TMA_Warehouse.Server;
+using WarehouseAPI.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<WarehouseContext>();
+builder.Services.AddScoped<ItemController>();
+builder.Services.AddScoped<OrderController>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
