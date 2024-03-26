@@ -1,4 +1,7 @@
-﻿namespace TMA_Warehouse.Client.Services
+﻿using System.Net.Http.Json;
+using TMA_Warehouse.Shared.DTOs;
+
+namespace TMA_Warehouse.Client.Services
 {
     public class OrderService
     {
@@ -6,6 +9,43 @@
         public OrderService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
+        }
+
+        public async Task<IEnumerable<OrderDTO>> GetOrders()
+        {
+            try
+            {
+                var res = await httpClient.GetFromJsonAsync<IEnumerable<OrderDTO>>("api/Order/GetOrders");
+
+                return res;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP request failed: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<OrderDTO> GetOrder(int id)
+        {
+            try
+            {
+                return await httpClient.GetFromJsonAsync<OrderDTO>($"api/Order/GetOrder/{id}");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<HttpResponseMessage> RemoveOrder(OrderDTO orderDto)
+        {
+            return await httpClient.DeleteAsync($"api/Order/RemoveOrder/{orderDto.Id}");
         }
     }
 }

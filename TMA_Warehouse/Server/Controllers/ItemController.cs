@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs;
-using WarehouseAPI.Models;
+using TMA_Warehouse.Server;
+using TMA_Warehouse.Shared.DTOs;
+using TMA_Warehouse.Shared.Models;
 
 namespace WarehouseAPI.Controllers
 {
@@ -20,14 +21,38 @@ namespace WarehouseAPI.Controllers
         [Route("GetItems")]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> GetItems()
         {
-            return Ok(await context.Items.Select(x => new ItemDTO(x)).ToListAsync());
+            return Ok(await context.Items.Include(x => x.OrderedItems).Select(x => new ItemDTO{
+            Id = x.Id,
+            Name = x.Name,
+            ItemGroup = x.ItemGroup,
+            UnitOfMeasurement = x.UnitOfMeasurement,
+            Quantity = x.Quantity,
+            PriceWithoutVat = x.PriceWithoutVat,
+            Status = x.Status,
+            StorageLocation = x.StorageLocation,
+            ContactPerson = x.ContactPerson,
+            PhotoUrl = x.PhotoUrl,
+            }).ToListAsync());
         }
 
         [HttpGet]
         [Route("GetItem/{id}")]
         public async Task<ActionResult<ItemDTO>> GetItem(int id)
         {
-            var item = await context.Items.Where(x => x.Id == id).Select(x => new ItemDTO(x)).FirstOrDefaultAsync();
+            var item = await context.Items.Include(x => x.OrderedItems).Where(x => x.Id == id).Select(x => new ItemDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                ItemGroup = x.ItemGroup,
+                UnitOfMeasurement = x.UnitOfMeasurement,
+                Quantity = x.Quantity,
+                PriceWithoutVat = x.PriceWithoutVat,
+                Status = x.Status,
+                StorageLocation = x.StorageLocation,
+                ContactPerson = x.ContactPerson,
+                PhotoUrl = x.PhotoUrl,
+            }).FirstOrDefaultAsync();
+
             if (item == null)
             {
                 return NotFound();
@@ -41,7 +66,18 @@ namespace WarehouseAPI.Controllers
         {
             try
             {
-                Item newItem = new Item(itemDto);
+                Item newItem = new Item{
+                    //Id = itemDto.Id,
+                    Name = itemDto.Name,
+                    ItemGroup = itemDto.ItemGroup,
+                    UnitOfMeasurement = itemDto.UnitOfMeasurement,
+                    Quantity = itemDto.Quantity,
+                    PriceWithoutVat = itemDto.PriceWithoutVat,
+                    Status = itemDto.Status,
+                    StorageLocation = itemDto.StorageLocation,
+                    ContactPerson = itemDto.ContactPerson,
+                    PhotoUrl = itemDto.PhotoUrl,
+                };
                 context.Items.Add(newItem);
 
                 await context.SaveChangesAsync();
@@ -67,7 +103,7 @@ namespace WarehouseAPI.Controllers
                     return NotFound(id);
                 }
 
-                existingItem.Id = itemDto.Id;
+                //existingItem.Id = itemDto.Id;
                 existingItem.Name = itemDto.Name;
                 existingItem.ItemGroup = itemDto.ItemGroup;
                 existingItem.UnitOfMeasurement = itemDto.UnitOfMeasurement;
@@ -105,29 +141,28 @@ namespace WarehouseAPI.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("GetBiggestItemId")]
-        public async Task<ActionResult<int>> GetBiggestItemId()
-        {
-            try
-            {
-                IEnumerable<Item> items = await context.Items.ToListAsync();
+        //[HttpGet]
+        //[Route("GetBiggestItemId")]
+        //public async Task<ActionResult<int>> GetBiggestItemId()
+        //{
+        //    try
+        //    {
+        //        IEnumerable<Item> items = await context.Items.ToListAsync();
 
-                if (items == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    int maxId = items.Max(x => x.Id);
-                    return Ok(maxId);
-                }
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
-            }
-        }
-
+        //        if (items == null)
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            int maxId = items.Max(x => x.Id);
+        //            return Ok(maxId);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
+        //    }
+        //}
     }
 }

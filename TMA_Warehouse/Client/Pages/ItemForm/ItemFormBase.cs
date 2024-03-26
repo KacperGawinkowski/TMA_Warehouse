@@ -2,7 +2,6 @@
 using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Shared.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -11,21 +10,17 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TMA_Warehouse.Client.Services;
+using TMA_Warehouse.Shared.DTOs;
 
-namespace TMA_Warehouse.Client.Pages
+namespace TMA_Warehouse.Client.Pages.ItemForm
 {
     public class ItemFormBase : ComponentBase
     {
         [Inject] internal ItemService ItemService { get; set; }
-
-
         [Inject] internal NavigationManager NavigationManager { get; set; }
-
         [Inject] internal HttpClient Http { get; set; }
 
         internal ItemDTO ItemDTO { get; set; }
-
-
         internal bool WasItemPassedInUri;
         internal string ApplyButtonText => WasItemPassedInUri ? "Update Item" : "Add Item";
 
@@ -47,7 +42,7 @@ namespace TMA_Warehouse.Client.Pages
             else
             {
                 ItemDTO = new ItemDTO();
-                ItemDTO.Id = await ItemService.GetBiggestItemId() + 1;   //await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
+                //ItemDTO.Id = await ItemService.GetBiggestItemId() + 1;   //await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
 
                 WasItemPassedInUri = false;
             }

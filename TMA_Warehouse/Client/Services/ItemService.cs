@@ -1,5 +1,5 @@
-﻿using Shared.DTOs;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using TMA_Warehouse.Shared.DTOs;
 
 namespace TMA_Warehouse.Client.Services
 {
@@ -16,8 +16,6 @@ namespace TMA_Warehouse.Client.Services
             try
             {
                 var res = await httpClient.GetFromJsonAsync<IEnumerable<ItemDTO>>("api/Item/GetItems");
-
-                Console.WriteLine($"Results length = {res?.Count() ?? 0}");
 
                 return res;
             }
@@ -74,9 +72,9 @@ namespace TMA_Warehouse.Client.Services
             return await httpClient.DeleteAsync($"api/Item/RemoveItem/{itemDto.Id}");
         }
 
-        public async Task<int> GetBiggestItemId()
-        {
-            return await httpClient.GetFromJsonAsync<int>($"api/Item/GetBiggestItemId");
-        }
+        //public async Task<int> GetBiggestItemId()
+        //{
+        //    return await httpClient.GetFromJsonAsync<int>($"api/Item/GetBiggestItemId");
+        //}
     }
 }

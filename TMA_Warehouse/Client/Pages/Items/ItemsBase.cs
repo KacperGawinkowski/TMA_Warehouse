@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Shared.DTOs;
 using TMA_Warehouse.Client.Services;
+using TMA_Warehouse.Shared.DTOs;
 
-namespace WarehouseApp.Pages
+namespace TMA_Warehouse.Client.Pages.Items
 {
     public class ItemsBase : ComponentBase
     {
@@ -14,7 +14,6 @@ namespace WarehouseApp.Pages
         protected override async Task OnInitializedAsync()
         {
             Items = await ItemService.GetItems();
-            Console.WriteLine("items Count = " + Items.Count());
         }
 
         internal void UpdateItemButtonAction(ItemDTO item)

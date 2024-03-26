@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
-using WarehouseAPI.Models;
+using TMA_Warehouse.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 

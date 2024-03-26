@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WarehouseAPI.Models
+﻿namespace TMA_Warehouse.Shared.Models
 {
     public partial class Order
     {

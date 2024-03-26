@@ -1,14 +1,14 @@
-﻿@page "/addItem"
+﻿@page "/orderItem"
 @inherits OrderItemFormBase
 @using AntDesign;
 
 <PageTitle>Order Item Form</PageTitle>
 
-@if (ItemDTO != null)
+@*@if (ItemDTO != null)
 {
     <h3>Ordering @ItemDTO.Name</h3>
 
-@*     <Form Model="@ItemDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
+     <Form Model="@ItemDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
         <FormItem Label="Item Name" Required Rules=@RuleRequired>
             <Input @bind-Value="@ItemDTO.Name" />
@@ -58,9 +58,9 @@
             </Button>
         </FormItem>
 
-    </Form> *@
+    </Form> 
 }
 else
 {
     <p>Loading...</p>
-}
+}*@

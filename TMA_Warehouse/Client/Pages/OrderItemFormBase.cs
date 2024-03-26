@@ -2,7 +2,6 @@
 using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Shared.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TMA_Warehouse.Client.Services;
+using TMA_Warehouse.Shared.DTOs;
 
 namespace TMA_Warehouse.Client.Pages
 {

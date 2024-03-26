@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WarehouseAPI.Models;
-
-namespace Shared.DTOs
+﻿namespace TMA_Warehouse.Shared.DTOs
 {
     public class ItemDTO
     {
@@ -17,24 +12,5 @@ namespace Shared.DTOs
         public string? StorageLocation { get; set; }
         public string? ContactPerson { get; set; }
         public string? PhotoUrl { get; set; }
-
-        public ItemDTO()
-        {
-
-        }
-
-        public ItemDTO(Item item)
-        {
-            Id = item.Id;
-            Name = item.Name;
-            ItemGroup = item.ItemGroup;
-            UnitOfMeasurement = item.UnitOfMeasurement;
-            Quantity = item.Quantity;
-            PriceWithoutVat = item.PriceWithoutVat;
-            Status = item.Status;
-            StorageLocation = item.StorageLocation;
-            ContactPerson = item.ContactPerson;
-            PhotoUrl = item.PhotoUrl;
-        }
     }
 }

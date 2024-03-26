@@ -1,8 +1,4 @@
-﻿using Shared.DTOs;
-using System;
-using System.Collections.Generic;
-
-namespace WarehouseAPI.Models
+﻿namespace TMA_Warehouse.Shared.Models
 {
     public partial class Item
     {
@@ -23,19 +19,5 @@ namespace WarehouseAPI.Models
         public string? PhotoUrl { get; set; }
 
         public virtual ICollection<OrderedItem> OrderedItems { get; set; }
-
-        public Item(ItemDTO itemDTO)
-        {
-            Id = itemDTO.Id;
-            Name = itemDTO.Name;
-            ItemGroup = itemDTO.ItemGroup;
-            UnitOfMeasurement = itemDTO.UnitOfMeasurement;
-            Quantity = itemDTO.Quantity;
-            PriceWithoutVat = itemDTO.PriceWithoutVat;
-            Status = itemDTO.Status;
-            StorageLocation = itemDTO.StorageLocation;
-            ContactPerson = itemDTO.ContactPerson;
-            PhotoUrl = itemDTO.PhotoUrl;
-        }
     }
 }

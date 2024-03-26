@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using TMA_Warehouse.Shared.Models;
 
-namespace WarehouseAPI.Models
+namespace TMA_Warehouse.Server
 {
     public partial class WarehouseContext : DbContext
     {
@@ -34,9 +35,7 @@ namespace WarehouseAPI.Models
             {
                 entity.ToTable("Item");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.ContactPerson)
                     .HasMaxLength(50)
@@ -76,9 +75,7 @@ namespace WarehouseAPI.Models
             {
                 entity.ToTable("Order");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Comment)
                     .HasMaxLength(200)

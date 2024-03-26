@@ -1,7 +1,6 @@
 ﻿@page "/Lists/Items"
 @using AntDesign
-@using WarehouseApp.Pages
-@using global::Shared.DTOs
+@using TMA_Warehouse.Shared.DTOs
 @inherits ItemsBase
 
 @if (Items == null)
@@ -36,7 +35,7 @@ else
             <ActionColumn Title="Action">
                 <Space Size=@("middle")>
                     <SpaceItem>
-                        <Button Danger OnClick="()=>OrderItemButtonAction(context)">Order</Button>
+                        <Button Type="@ButtonType.Primary" OnClick="()=>OrderItemButtonAction(context)">Order</Button>
                     </SpaceItem>
                     <SpaceItem>
                         <Button Type="@ButtonType.Primary" OnClick="()=>UpdateItemButtonAction(context)">Update</Button>
