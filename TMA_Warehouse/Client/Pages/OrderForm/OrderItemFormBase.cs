@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using TMA_Warehouse.Client.FrontendModels;
+using TMA_Warehouse.Client.Pages.OrderDetails;
 using TMA_Warehouse.Client.Services;
 using TMA_Warehouse.Shared.DTOs;
 
@@ -16,11 +18,14 @@ namespace TMA_Warehouse.Client.Pages
 {
     public class OrderItemFormBase : ComponentBase
     {
+        [Inject] internal ItemService OrderService { get; set; }
         [Inject] internal ItemService ItemService { get; set; }
+        [Inject] internal IMessageService MessageService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
         [Inject] internal HttpClient Http { get; set; }
 
-        internal ItemDTO ItemDTO { get; set; }
+        internal OrderDTO OrderDTO { get; set; }
+        internal List<ItemOrderDetails> ItemOrderDetails { get; set; }
 
         internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message = "Field is required" } };
         internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
@@ -28,14 +33,8 @@ namespace TMA_Warehouse.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var uri = new Uri(NavigationManager.Uri);
-            var queryParameters = System.Web.HttpUtility.ParseQueryString(uri.Query);
-
-            if (queryParameters.AllKeys.Contains("id") && !string.IsNullOrEmpty(queryParameters["id"]))
-            {
-                string itemId = queryParameters["id"];
-                ItemDTO = await ItemService.GetItem(int.Parse(itemId));
-            }
+            OrderDTO = new OrderDTO();
+            ItemOrderDetails = new List<ItemOrderDetails>();
         }
 
         internal async void OnFinish(EditContext editContext)

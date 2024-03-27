@@ -42,8 +42,6 @@ namespace TMA_Warehouse.Client.Pages.ItemForm
             else
             {
                 ItemDTO = new ItemDTO();
-                //ItemDTO.Id = await ItemService.GetBiggestItemId() + 1;   //await Http.GetFromJsonAsync<int>($"Lists/Items/GetBiggestItemId") + 1;
-
                 WasItemPassedInUri = false;
             }
         }
@@ -113,6 +111,4 @@ namespace TMA_Warehouse.Client.Pages.ItemForm
             NavigationManager.NavigateTo($"/addItem?id={ItemDTO.Id}");
         }
     }
-
-
 }

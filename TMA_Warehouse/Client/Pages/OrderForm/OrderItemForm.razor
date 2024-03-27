@@ -4,11 +4,9 @@
 
 <PageTitle>Order Item Form</PageTitle>
 
-@*@if (ItemDTO != null)
+@* @if (OrderDTO != null)
 {
-    <h3>Ordering @ItemDTO.Name</h3>
-
-     <Form Model="@ItemDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
+    <Form Model="@OrderDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
         <FormItem Label="Item Name" Required Rules=@RuleRequired>
             <Input @bind-Value="@ItemDTO.Name" />

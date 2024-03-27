@@ -64,6 +64,8 @@ namespace WarehouseAPI.Controllers
         [Route("AddItem")]
         public async Task<ActionResult> AddItem([FromBody] ItemDTO itemDto)
         {
+            Console.WriteLine($"UnitOfMeasurement: {itemDto.UnitOfMeasurement} {itemDto.UnitOfMeasurement.GetType()} {itemDto.UnitOfMeasurement.GetTypeCode()}");
+
             try
             {
                 Item newItem = new Item{
@@ -77,6 +79,7 @@ namespace WarehouseAPI.Controllers
                     ContactPerson = itemDto.ContactPerson,
                     PhotoUrl = itemDto.PhotoUrl,
                 };
+
                 context.Items.Add(newItem);
 
                 await context.SaveChangesAsync();

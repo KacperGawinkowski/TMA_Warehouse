@@ -6,6 +6,7 @@
     using System.Text;
     using System.Text.Json;
     using System.Text.Json.Serialization;
+    using TMA_Warehouse.Client.FrontendModels;
     using TMA_Warehouse.Client.Services;
     using TMA_Warehouse.Shared.DTOs;
 
@@ -46,15 +47,5 @@
                 }
             }
         }
-    }
-
-
-    public class ItemOrderDetails
-    {
-        public string ItemName { get; set; }
-        public string UnitOfMeasurement { get; set; }
-        public float Quantity { get; set; }
-        public decimal PriceWithoutVat { get; set; }
-        public string? Comment { get; set; }
     }
 }

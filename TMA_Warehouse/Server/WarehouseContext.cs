@@ -67,7 +67,7 @@ namespace TMA_Warehouse.Server
                     .IsUnicode(false);
 
                 entity.Property(e => e.UnitOfMeasurement)
-                    .HasMaxLength(50)
+                    .HasMaxLength(20)
                     .IsUnicode(false);
             });
 
@@ -110,7 +110,7 @@ namespace TMA_Warehouse.Server
                     .HasColumnName("PriceWithoutVAT");
 
                 entity.Property(e => e.UnitOfMeasurement)
-                    .HasMaxLength(50)
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Item)
