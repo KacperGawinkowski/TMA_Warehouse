@@ -18,7 +18,7 @@ else
     if (Orders.Count() > 0)
     {
 
-        <Table TItem="OrderDTO" DataSource="@Orders">
+        <Table TItem="OrderDTO" DataSource="@Orders" PageSize="20">
             <PropertyColumn Property="c=>c.EmployeeName" Title="Name" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.Comment" Title="Comment" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>GetTotalPrice(c)" Title="Total Price" Sortable Filterable></PropertyColumn>

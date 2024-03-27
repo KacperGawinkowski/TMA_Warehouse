@@ -1,0 +1,30 @@
+﻿@page "/Lists/Requests/RequestDetails"
+@inherits OrderDetailsBase
+@using AntDesign;
+@using TMA_Warehouse.Shared.DTOs
+
+<PageTitle> Order Details </PageTitle>
+
+@if (OrderDTO != null)
+{
+    <h2> Order Details</h2>
+    <Table TItem="OrderDTO" DataSource="@OrderDTO" HidePagination="@true">
+        <PropertyColumn Property="c=>c.EmployeeName" Title="EmployeeName"></PropertyColumn>
+        <PropertyColumn Property="c=>c.Comment" Title="Comment"></PropertyColumn>
+        <PropertyColumn Property="c=>c.Status" Title="Status"></PropertyColumn>
+    </Table>
+
+    <h3 style="margin-top: 25px"> List of ordered items </h3>
+
+    <Table TItem="ItemOrderDetails" DataSource="@OrderedItems" PageSize="5">
+        <PropertyColumn Property="c=>c.ItemName" Title="Item Name" Sortable Filterable></PropertyColumn>
+        <PropertyColumn Property="c=>c.UnitOfMeasurement" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
+        <PropertyColumn Property="c=>c.PriceWithoutVat" Title="Price" Sortable Filterable></PropertyColumn>
+        <PropertyColumn Property="c=>c.Comment" Title="Comment" Sortable Filterable></PropertyColumn>
+    </Table>
+}
+else
+{
+    <p>Loading...</p>
+}
+

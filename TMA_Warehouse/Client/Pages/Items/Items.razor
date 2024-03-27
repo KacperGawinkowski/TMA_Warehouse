@@ -3,6 +3,8 @@
 @using TMA_Warehouse.Shared.DTOs
 @inherits ItemsBase
 
+<PageTitle>List of goods</PageTitle>
+
 @if (Items == null)
 {
     <h3>Loading Items...</h3>
@@ -21,7 +23,7 @@ else
     if (Items.Count() > 0)
     {
 
-        <Table TItem="ItemDTO" DataSource="@Items">
+        <Table TItem="ItemDTO" DataSource="@Items" PageSize="20">
             <PropertyColumn Property="c=>c.Name" Title="Name" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.ItemGroup" Title="Item Group" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.UnitOfMeasurement" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>

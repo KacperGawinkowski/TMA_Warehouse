@@ -4,7 +4,7 @@ using TMA_Warehouse.Client.Services;
 using TMA_Warehouse.Shared.DTOs;
 using TMA_Warehouse.Shared.Models;
 
-namespace TMA_Warehouse.Client.Pages.Requests
+namespace TMA_Warehouse.Client.Pages.Orders
 {
     public class OrderBase : ComponentBase
     {
@@ -25,7 +25,7 @@ namespace TMA_Warehouse.Client.Pages.Requests
         }
         internal void OrderDetailsButtonAction(OrderDTO order)
         {
-            
+            NavigationManager.NavigateTo($"/Lists/Requests/RequestDetails?id={order.Id}");
         }
         internal async void RejectOrderButtonAction(OrderDTO order)
         {
@@ -37,14 +37,16 @@ namespace TMA_Warehouse.Client.Pages.Requests
 
         internal async void ConfirmOrderButtonAction(OrderDTO order)
         {
-            //TODO
-            //Turn this into a transaction
-            foreach (OrderedItemDTO orderedItem in order.OrderedItems) 
-            { 
-                await ItemService.UpdateItemAmount(orderedItem.ItemId, orderedItem.Quantity);
-                //await OrderService.RemoveOrder(order); //czy order ma sie usunąć po zatwierdzeniu???
-            }
-            await OrderService.UpdateOrderStatus(order.Id, "Aproved");
+            ////TODO
+            ////Turn this into a transaction
+            //foreach (OrderedItemDTO orderedItem in order.OrderedItems) 
+            //{ 
+            //    await ItemService.UpdateItemAmount(orderedItem.ItemId, orderedItem.Quantity);
+            //    //await OrderService.RemoveOrder(order); //czy order ma sie usunąć po zatwierdzeniu???
+            //}
+            //await OrderService.UpdateOrderStatus(order.Id, "Aproved");
+
+            await OrderService.ConfirmOrder(order.Id, order);
             Orders = await OrderService.GetOrders();
             StateHasChanged();
         }
