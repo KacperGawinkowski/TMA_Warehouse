@@ -13,24 +13,15 @@ else
 {
     <h3 class="mb-5">Items</h3>
 
-@*     <h1>
-        <button @onclick="@(() => AddItemButtonAction())" class="btn btn-primary">Add Item</button>
-    </h1> *@
-
     <div style="margin-bottom: 25px">
         <Button Type="@ButtonType.Primary" OnClick="() => AddItemButtonAction()">Add Item</Button>
         <Button Type="@ButtonType.Primary" OnClick="()=>OrderItemButtonAction()">Place Order</Button>
     </div>
-@*     <h1>
-        <button @onclick="@(() => AddItemButtonAction())" class="btn btn-primary">Add Item</button>
-    </h1> *@
 
     <input type="text" @oninput="@((value) => SearchForItems(value.Value.ToString()))" placeholder="Search by name..." class="form-control mb-3" />
 
-
     if (Items.Count() > 0)
     {
-
         <Table TItem="ItemDTO" DataSource="@Items" PageSize="20">
             <PropertyColumn Property="c=>c.Name" Title="Name" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.ItemGroup" Title="Item Group" Sortable Filterable></PropertyColumn>
@@ -44,9 +35,6 @@ else
 
             <ActionColumn Title="Action">
                 <Space Size=@("middle")>
-@*                     <SpaceItem>
-                        <Button Type="@ButtonType.Primary" OnClick="()=>OrderItemButtonAction(context)">Order</Button>
-                    </SpaceItem> *@
                     <SpaceItem>
                         <Button Type="@ButtonType.Primary" OnClick="()=>UpdateItemButtonAction(context)">Update</Button>
                     </SpaceItem>

@@ -1,3 +1,4 @@
+using AntDesign;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TMA_Warehouse.Client;
@@ -10,6 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<MessageService>();
 builder.Services.AddAntDesign();
 
 await builder.Build().RunAsync();

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using System.Text.Json.Serialization;
 using TMA_Warehouse.Server;
 using WarehouseAPI.Controllers;
 
@@ -9,6 +10,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<WarehouseContext>();
 builder.Services.AddScoped<ItemController>();
 builder.Services.AddScoped<OrderController>();
+builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

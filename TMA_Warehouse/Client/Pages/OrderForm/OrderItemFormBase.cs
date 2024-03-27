@@ -19,18 +19,20 @@ namespace TMA_Warehouse.Client.Pages
 {
     public class OrderItemFormBase : ComponentBase
     {
-        [Inject] internal ItemService OrderService { get; set; }
+        [Inject] internal OrderService OrderService { get; set; }
         [Inject] internal ItemService ItemService { get; set; }
-        [Inject] internal IMessageService MessageService { get; set; }
+        [Inject] internal MessageService MessageService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
         [Inject] internal HttpClient Http { get; set; }
 
         internal OrderDTO OrderDTO { get; set; }
         internal ItemOrderModel ItemToAdd;
-        internal List<OrderedItemDTO> OrderedItemDTOs { get; set; }
+        internal IEnumerable<ItemOrderModel> OrderedItems { get; set; }
         internal IEnumerable<ItemDTO> Items { get; set; }
 
-        internal string SelectedItemIdAsString { get; set; }
+        internal bool showSuccess = false;
+        internal string popupTitle = "";
+        internal string popupMessage = "";
 
         internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message = "Field is required" } };
         internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
@@ -39,7 +41,7 @@ namespace TMA_Warehouse.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             OrderDTO = new OrderDTO();
-            OrderedItemDTOs = new List<OrderedItemDTO>();
+            OrderedItems = new List<ItemOrderModel>();
             ItemToAdd = new ItemOrderModel();
 
             Items = await ItemService.GetItems();
@@ -47,40 +49,76 @@ namespace TMA_Warehouse.Client.Pages
 
         internal async void OnFinishOrder(EditContext context)
         {
-            Console.WriteLine("OnFinish");
-            NavigationManager.NavigateTo($"/Lists/Items");
+            try
+            {
+                List<OrderedItemDTO> orderedItems = new List<OrderedItemDTO>();
+                foreach (var item in OrderedItems)
+                {
+                    orderedItems.Add(new OrderedItemDTO
+                    {
+                        ItemId = Items.First(x => x.Name == item.ItemName).Id,
+                        UnitOfMeasurement = item.UnitOfMeasurement,
+                        Quantity = item.Quantity,
+                        PriceWithoutVat = item.PriceWithoutVat,
+                        Comment = item.Comment,
+                    });
+                }
+                OrderDTO.OrderedItems = orderedItems;
+
+                HttpResponseMessage res = await OrderService.AddOrder(OrderDTO);
+                if(res.IsSuccessStatusCode)
+                {
+                    NavigationManager.NavigateTo($"/Lists/Items");
+                }
+                else
+                {
+                    await ShowPopupMessage("Failed", "Request couldnt be created", 3f);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
         }
 
         internal async void OnFinishAddingItemToOrder(ItemOrderModel context)
         {
-            OrderedItemDTO orderedItemDTO = new OrderedItemDTO
-            {
-                ItemId = Items.Where(x => x.Name == context.ItemName).First().Id,
-                UnitOfMeasurement = context.UnitOfMeasurement,
-                Quantity = context.Quantity,
-                PriceWithoutVat = context.PriceWithoutVat,
-                Comment = context.Comment
-            };
+            List<ItemOrderModel> orderedItemsList = OrderedItems.ToList();
 
-            OrderedItemDTOs.Add(orderedItemDTO);
+            orderedItemsList.Add(context);
+            OrderedItems = orderedItemsList;
 
-            if(OrderedItemDTOs.Count > 1)
+            if (orderedItemsList.Count > 1)
             {
-                await MessageService.Success("Request created");
+                await ShowPopupMessage("Success", "Request created", 3f);
+            }                                                          
+            else                                                       
+            {                                                          
+                await ShowPopupMessage("Success", "Request updated", 3f);
             }
-            else
-            {
-                await MessageService.Success("Request updated");
-            }
-
-            //update orderItemForm itemslist
 
             ItemToAdd = new ItemOrderModel();
+            StateHasChanged();
+        }
+
+        internal void CancelOrder()
+        {
+            NavigationManager.NavigateTo($"/Lists/Items");
+        }
+
+        public async Task ShowPopupMessage(string messageTitle, string message, float popupTimeInSeconds)
+        {
+            showSuccess = true;
+            popupTitle = messageTitle;
+            popupMessage = message;
+            StateHasChanged();
+
+            await Task.Delay((int)(popupTimeInSeconds * 1000));
+            showSuccess = false;
+            StateHasChanged();
         }
 
     }
-
-    public class KeyStringSelect : Select<int, string> { }
-
-    public class KeyStringSelectSelectOption : SelectOption<int, string> { }
 }
