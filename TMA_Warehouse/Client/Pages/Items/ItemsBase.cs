@@ -32,9 +32,9 @@ namespace TMA_Warehouse.Client.Pages.Items
             NavigationManager.NavigateTo("additem");
         }
 
-        internal void OrderItemButtonAction(ItemDTO item)
+        internal void OrderItemButtonAction()
         {
-            NavigationManager.NavigateTo($"/orderItem?id={item.Id}");
+            NavigationManager.NavigateTo($"/orderItem");
         }
 
         internal async void SearchForItems(string str)

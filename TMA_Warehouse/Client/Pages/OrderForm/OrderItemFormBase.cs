@@ -2,6 +2,7 @@
 using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -25,7 +26,11 @@ namespace TMA_Warehouse.Client.Pages
         [Inject] internal HttpClient Http { get; set; }
 
         internal OrderDTO OrderDTO { get; set; }
-        internal List<ItemOrderDetails> ItemOrderDetails { get; set; }
+        internal ItemOrderModel ItemToAdd;
+        internal List<OrderedItemDTO> OrderedItemDTOs { get; set; }
+        internal IEnumerable<ItemDTO> Items { get; set; }
+
+        internal string SelectedItemIdAsString { get; set; }
 
         internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message = "Field is required" } };
         internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
@@ -34,16 +39,48 @@ namespace TMA_Warehouse.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             OrderDTO = new OrderDTO();
-            ItemOrderDetails = new List<ItemOrderDetails>();
+            OrderedItemDTOs = new List<OrderedItemDTO>();
+            ItemToAdd = new ItemOrderModel();
+
+            Items = await ItemService.GetItems();
         }
 
-        internal async void OnFinish(EditContext editContext)
+        internal async void OnFinishOrder(EditContext context)
         {
             Console.WriteLine("OnFinish");
-            //reload Items (the amount might have changed ez)
             NavigationManager.NavigateTo($"/Lists/Items");
         }
+
+        internal async void OnFinishAddingItemToOrder(ItemOrderModel context)
+        {
+            OrderedItemDTO orderedItemDTO = new OrderedItemDTO
+            {
+                ItemId = Items.Where(x => x.Name == context.ItemName).First().Id,
+                UnitOfMeasurement = context.UnitOfMeasurement,
+                Quantity = context.Quantity,
+                PriceWithoutVat = context.PriceWithoutVat,
+                Comment = context.Comment
+            };
+
+            OrderedItemDTOs.Add(orderedItemDTO);
+
+            if(OrderedItemDTOs.Count > 1)
+            {
+                await MessageService.Success("Request created");
+            }
+            else
+            {
+                await MessageService.Success("Request updated");
+            }
+
+            //update orderItemForm itemslist
+
+            ItemToAdd = new ItemOrderModel();
+        }
+
     }
 
+    public class KeyStringSelect : Select<int, string> { }
 
+    public class KeyStringSelectSelectOption : SelectOption<int, string> { }
 }

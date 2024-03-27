@@ -4,25 +4,31 @@
 
 <PageTitle>Order Item Form</PageTitle>
 
-@* @if (OrderDTO != null)
+@if (OrderDTO != null && ItemToAdd != null && Items != null && Items.Count() > 0)
 {
-    <Form Model="@OrderDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
+    <Form Model="@OrderDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinishOrder">
 
-        <FormItem Label="Item Name" Required Rules=@RuleRequired>
-            <Input @bind-Value="@ItemDTO.Name" />
+        <FormItem Label="Order Comment">
+            <TextArea @bind-Value="@OrderDTO.Comment" />
         </FormItem>
 
-        <FormItem Label="Item Group" Required Rules=@RuleRequired>
-            <SimpleSelect @bind-Value="ItemDTO.ItemGroup">
+    </Form>
+
+    <Form Model="@ItemToAdd" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="() => OnFinishAddingItemToOrder(ItemToAdd)">
+
+         <FormItem Label="Item" Required Rules=@RuleRequired>
+            <SimpleSelect @bind-Value="ItemToAdd.ItemName">
                 <SelectOptions>
-                    <SimpleSelectOption Value="Group_1" Label="Group_1"></SimpleSelectOption>
-                    <SimpleSelectOption Value="Group_2" Label="Group_2"></SimpleSelectOption>
+                    @foreach (var item in Items)
+                    {
+                        <SimpleSelectOption Value="@item.Name" Label="@item.Name"></SimpleSelectOption>
+                    }
                 </SelectOptions>
             </SimpleSelect>
-        </FormItem>
+        </FormItem> 
 
         <FormItem Label="Unit of Measurement" Required Rules=@RuleRequired>
-            <SimpleSelect @bind-Value="ItemDTO.UnitOfMeasurement">
+            <SimpleSelect @bind-Value="ItemToAdd.UnitOfMeasurement">
                 <SelectOptions>
                     <SimpleSelectOption Value="Unit_1" Label="Unit_1"></SimpleSelectOption>
                     <SimpleSelectOption Value="Unit_2" Label="Unit_2"></SimpleSelectOption>
@@ -31,34 +37,25 @@
         </FormItem>
 
         <FormItem Label="Quantity" Required Rules=@QuantityRule>
-            <AntDesign.InputNumber @bind-Value="@ItemDTO.Quantity" /> 
+            <AntDesign.InputNumber @bind-Value="@ItemToAdd.Quantity" />
         </FormItem>
 
         <FormItem Label="Price" Required Rules=@MoneyRule>
-            <AntDesign.InputNumber @bind-Value="@ItemDTO.PriceWithoutVat" />
+            <AntDesign.InputNumber @bind-Value="@ItemToAdd.PriceWithoutVat" />
         </FormItem>
 
-        <FormItem Label="Status" Required Rules=@RuleRequired>
-            <Input @bind-Value="@ItemDTO.Status" />
-        </FormItem>
-
-        <FormItem Label="Storage Location">
-            <Input @bind-Value="@ItemDTO.StorageLocation" />
-        </FormItem>
-
-        <FormItem Label="Contact person" >
-            <TextArea @bind-Value="@ItemDTO.ContactPerson" />
+        <FormItem Label="Comment">
+            <TextArea @bind-Value="@ItemToAdd.Comment" />
         </FormItem>
 
         <FormItem WrapperColOffset="2" WrapperColSpan="4">
             <Button Type="@ButtonType.Primary" HtmlType="submit">
-                @ApplyButtonText
+                Add to Order
             </Button>
         </FormItem>
-
-    </Form> 
+    </Form>
 }
 else
 {
     <p>Loading...</p>
-}*@
+}

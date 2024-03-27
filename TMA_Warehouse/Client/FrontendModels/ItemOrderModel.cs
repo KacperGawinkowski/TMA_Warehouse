@@ -1,9 +1,9 @@
 ﻿namespace TMA_Warehouse.Client.FrontendModels
 {
-    public class OrderForm
+    public class ItemOrderModel
     {
-        public int ItemId { get; set; }
-        public string UnitOfMeasurement { get; set; }
+        public string ItemName { get; set; }
+        public string UnitOfMeasurement { get; set; } = null!;
         public float Quantity { get; set; }
         public decimal PriceWithoutVat { get; set; }
         public string? Comment { get; set; }
