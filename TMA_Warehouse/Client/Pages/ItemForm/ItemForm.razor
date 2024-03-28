@@ -17,11 +17,11 @@
 
     <Form Model="@ItemDTO" LabelColSpan="2" WrapperColSpan="4" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed">
 
-        <FormItem Label="Item Name" Required Rules=@RuleRequired>
+        <FormItem Label="Item Name" Required Rules=@Rules.RuleRequired>
             <Input @bind-Value="@ItemDTO.Name" />
         </FormItem>
 
-        <FormItem Label="Item Group" Required Rules=@RuleRequired>
+        <FormItem Label="Item Group" Required Rules=@Rules.RuleRequired>
             <SimpleSelect @bind-Value="ItemDTO.ItemGroup">
                 <SelectOptions>
                     <SimpleSelectOption Value="Group_1" Label="Group_1"></SimpleSelectOption>
@@ -30,7 +30,7 @@
             </SimpleSelect>
         </FormItem>
 
-        <FormItem Label="Unit of Measurement" Required Rules=@RuleRequired>
+        <FormItem Label="Unit of Measurement" Required Rules=@Rules.RuleRequired>
             <SimpleSelect @bind-Value="ItemDTO.UnitOfMeasurement">
                 <SelectOptions>
                     <SimpleSelectOption Value="Unit_1" Label="Unit_1"></SimpleSelectOption>
@@ -39,15 +39,15 @@
             </SimpleSelect>
         </FormItem>
 
-        <FormItem Label="Quantity" Required Rules=@QuantityRule>
+        <FormItem Label="Quantity" Required Rules=@Rules.QuantityRule>
             <AntDesign.InputNumber @bind-Value="@ItemDTO.Quantity" />
         </FormItem>
 
-        <FormItem Label="Price" Required Rules=@MoneyRule>
+        <FormItem Label="Price" Required Rules=@Rules.MoneyRule>
             <AntDesign.InputNumber @bind-Value="@ItemDTO.PriceWithoutVat" />
         </FormItem>
 
-        <FormItem Label="Status" Required Rules=@RuleRequired>
+        <FormItem Label="Status" Required Rules=@Rules.RuleRequired>
             <Input @bind-Value="@ItemDTO.Status" />
         </FormItem>
 

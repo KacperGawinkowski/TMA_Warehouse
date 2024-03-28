@@ -20,8 +20,9 @@
     <Table TItem="ItemOrderDetails" DataSource="@OrderedItems" PageSize="5">
         <PropertyColumn Property="c=>c.ItemName" Title="Item Name" Sortable Filterable></PropertyColumn>
         <PropertyColumn Property="c=>c.UnitOfMeasurement" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
+        <PropertyColumn Property="c=>c.Quantity" Title="Quantity" Sortable Filterable></PropertyColumn>
         <PropertyColumn Property="c=>c.PriceWithoutVat" Title="Price" Sortable Filterable></PropertyColumn>
-        <PropertyColumn Property="c=>c.Comment" Title="Comment" Sortable Filterable></PropertyColumn>
+        <PropertyColumn Property="c=>c.Comment" Title="Comment"></PropertyColumn>
     </Table>
 }
 else

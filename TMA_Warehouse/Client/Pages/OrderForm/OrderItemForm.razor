@@ -39,7 +39,7 @@
                     <PropertyColumn Property="tableContext=>tableContext.UnitOfMeasurement" Title="Unit of Measurement" Sortable Filterable></PropertyColumn>
                     <PropertyColumn Property="tableContext=>tableContext.Quantity" Title="Quantity" Sortable Filterable></PropertyColumn>
                     <PropertyColumn Property="tableContext=>tableContext.PriceWithoutVat" Title="Price" Sortable Filterable></PropertyColumn>
-                    <PropertyColumn Property="tableContext=>tableContext.Comment" Title="Comment" Sortable Filterable></PropertyColumn>
+                    <PropertyColumn Property="tableContext=>tableContext.Comment" Title="Comment"></PropertyColumn>
                 </Table>
 
                 <FormItem WrapperColOffset="2" WrapperColSpan="4">
@@ -61,7 +61,7 @@
 
             <Form Model="@ItemToAdd" LabelColSpan="4" WrapperColSpan="10" Size="AntSizeLDSType.Default" ValidateMode="@FormValidateMode.Rules" OnFinish="() => OnFinishAddingItemToOrder(ItemToAdd)">
 
-                <FormItem Label="Item" Required Rules=@RuleRequired>
+                <FormItem Label="Item" Required Rules=@Rules.RuleRequired>
                     <SimpleSelect @bind-Value="ItemToAdd.ItemName">
                         <SelectOptions>
                             @foreach (var item in Items)
@@ -72,7 +72,7 @@
                     </SimpleSelect>
                 </FormItem>
 
-                <FormItem Label="Unit of Measurement" Required Rules=@RuleRequired>
+                <FormItem Label="Unit of Measurement" Required Rules=@Rules.RuleRequired>
                     <SimpleSelect @bind-Value="ItemToAdd.UnitOfMeasurement">
                         <SelectOptions>
                             <SimpleSelectOption Value="Unit_1" Label="Unit_1"></SimpleSelectOption>
@@ -81,11 +81,11 @@
                     </SimpleSelect>
                 </FormItem>
 
-                <FormItem Label="Quantity" Required Rules=@QuantityRule>
+                <FormItem Label="Quantity" Required Rules=@Rules.QuantityRule>
                     <AntDesign.InputNumber @bind-Value="@ItemToAdd.Quantity" />
                 </FormItem>
 
-                <FormItem Label="Price" Required Rules=@MoneyRule>
+                <FormItem Label="Price" Required Rules=@Rules.MoneyRule>
                     <AntDesign.InputNumber @bind-Value="@ItemToAdd.PriceWithoutVat" />
                 </FormItem>
 

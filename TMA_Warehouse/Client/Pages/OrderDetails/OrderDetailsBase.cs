@@ -15,12 +15,19 @@
         [Inject] internal ItemService ItemService { get; set; }
         [Inject] internal OrderService OrderService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
+        [Inject] internal UserService UserService { get; set; }
 
         internal List<OrderDTO> OrderDTO { get; set; } = new List<OrderDTO>();
         internal List<ItemOrderDetails> OrderedItems { get; set; } = new List<ItemOrderDetails>();
 
         protected override async Task OnInitializedAsync()
         {
+            if (UserService.LoggedUser.Role == Role.Guest || UserService.LoggedUser.Role == Role.Employee)
+            {
+                NavigationManager.NavigateTo("/");
+                return;
+            }
+
             var uri = new Uri(NavigationManager.Uri);
             var queryParameters = System.Web.HttpUtility.ParseQueryString(uri.Query);
 

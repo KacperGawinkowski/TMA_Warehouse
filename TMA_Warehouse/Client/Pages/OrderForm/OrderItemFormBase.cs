@@ -21,6 +21,7 @@ namespace TMA_Warehouse.Client.Pages
     {
         [Inject] internal OrderService OrderService { get; set; }
         [Inject] internal ItemService ItemService { get; set; }
+        [Inject] internal UserService UserService { get; set; }
         [Inject] internal MessageService MessageService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
         [Inject] internal HttpClient Http { get; set; }
@@ -34,12 +35,14 @@ namespace TMA_Warehouse.Client.Pages
         internal string popupTitle = "";
         internal string popupMessage = "";
 
-        internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message = "Field is required" } };
-        internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
-        internal FormValidationRule[] QuantityRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
-
         protected override async Task OnInitializedAsync()
         {
+            if (UserService.LoggedUser.Role == Role.Guest)
+            {
+                NavigationManager.NavigateTo("/");
+                return;
+            }
+
             OrderDTO = new OrderDTO();
             OrderedItems = new List<ItemOrderModel>();
             ItemToAdd = new ItemOrderModel();
@@ -64,6 +67,7 @@ namespace TMA_Warehouse.Client.Pages
                     });
                 }
                 OrderDTO.OrderedItems = orderedItems;
+                OrderDTO.EmployeeName = UserService.LoggedUser.Username;
 
                 HttpResponseMessage res = await OrderService.AddOrder(OrderDTO);
                 if(res.IsSuccessStatusCode)
@@ -92,11 +96,11 @@ namespace TMA_Warehouse.Client.Pages
 
             if (orderedItemsList.Count > 1)
             {
-                await ShowPopupMessage("Success", "Request created", 3f);
+                await ShowPopupMessage("Success", "Request updated", 3f);
             }                                                          
             else                                                       
-            {                                                          
-                await ShowPopupMessage("Success", "Request updated", 3f);
+            {
+                await ShowPopupMessage("Success", "Request created", 3f);
             }
 
             ItemToAdd = new ItemOrderModel();

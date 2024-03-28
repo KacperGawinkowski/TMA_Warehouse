@@ -10,12 +10,18 @@ namespace TMA_Warehouse.Client.Pages.Orders
     {
         [Inject] internal OrderService OrderService { get; set; }
         [Inject] internal ItemService ItemService { get; set; }
+        [Inject] internal UserService UserService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
 
         internal IEnumerable<OrderDTO> Orders { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
+            if (UserService.LoggedUser.Role == Role.Guest || UserService.LoggedUser.Role == Role.Employee)
+            {
+                NavigationManager.NavigateTo("/");
+                return;
+            }
             Orders = await OrderService.GetOrders();
         }
 

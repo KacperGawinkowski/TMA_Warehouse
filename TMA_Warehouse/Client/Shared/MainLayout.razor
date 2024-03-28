@@ -1,13 +1,77 @@
 ﻿@inherits LayoutComponentBase
+@using AntDesign;
+@using TMA_Warehouse.Client.Services
+@using TMA_Warehouse.Shared.DTOs
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <CascadingValue Value="this">
+            <NavMenu />
+        </CascadingValue>
     </div>
 
     <main>
+        @if (UserService.LoggedUser.Role == Role.Guest)
+        {
+            <div style="position: absolute; top: 0; right: 0; padding: 10px;">
+                <Form Model="@UserService.LoggedUser" LabelColSpan="8" WrapperColSpan="16" OnFinish="OnFinish" OnFinishFailed="OnFinishFailed" ValidateMode="@FormValidateMode.Rules">
+                    <FormItem Label="Username" Required Rules=@Rules.RuleRequired>
+                        <Input @bind-Value="@context.Username" />
+                    </FormItem>
+                    <FormItem Label="Password" Required Rules=@Rules.RuleRequired>
+                        <InputPassword @bind-Value="@context.Password" />
+                    </FormItem>
+                    <FormItem WrapperColOffset="8" WrapperColSpan="16">
+                        <Button Type="@ButtonType.Primary" HtmlType="submit">
+                            Submit
+                        </Button>
+                    </FormItem>
+                </Form>
+
+                <p>Admin { username = admin, password = admin }</p>
+                <p>Coordinator { username = coord, password = coord }</p>
+                <p>Employee { username = emp, password = emp }</p>
+                
+            </div>
+        }
+
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+@code
+{
+    [Inject] public UserService UserService { get; set; }
+
+    public Action OnRefreshEvent { get; set; }
+
+    private async void OnFinish(EditContext editContext)
+    {
+        if (UserService.LoggedUser.Username == "admin" && UserService.LoggedUser.Password == "admin")
+        {
+            UserService.LoggedUser.Role = Role.Adminitrator;
+        }
+        else if (UserService.LoggedUser.Username == "coord" && UserService.LoggedUser.Password == "coord")
+        {
+            UserService.LoggedUser.Role = Role.Coordinator;
+        }
+        else if (UserService.LoggedUser.Username == "emp" && UserService.LoggedUser.Password == "emp")
+        {
+            UserService.LoggedUser.Role = Role.Employee;
+        }
+
+        RefreshPageState();
+    }
+
+    private void RefreshPageState()
+    {
+        OnRefreshEvent?.Invoke();
+        StateHasChanged();
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+        Console.WriteLine($"Failed");
+    }
+}

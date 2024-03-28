@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMA_Warehouse.Server;
 using TMA_Warehouse.Shared.DTOs;
@@ -98,7 +99,6 @@ namespace WarehouseAPI.Controllers
         {
             try
             {
-                Console.WriteLine("Balls");
                 Item existingItem = await context.Items.Where(x => x.Id == id).Include(x => x.OrderedItems).FirstOrDefaultAsync();
 
                 if (existingItem == null)

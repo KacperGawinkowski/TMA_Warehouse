@@ -14,7 +14,12 @@ else
     <h3 class="mb-5">Items</h3>
 
     <div style="margin-bottom: 25px">
-        <Button Type="@ButtonType.Primary" OnClick="() => AddItemButtonAction()">Add Item</Button>
+
+        @if (UserService.LoggedUser.Role == Role.Coordinator || UserService.LoggedUser.Role == Role.Adminitrator)
+        {
+            <Button Type="@ButtonType.Primary" OnClick="() => AddItemButtonAction()">Add Item</Button>
+        }
+
         <Button Type="@ButtonType.Primary" OnClick="()=>OrderItemButtonAction()">Place Order</Button>
     </div>
 
@@ -31,8 +36,10 @@ else
             <PropertyColumn Property="c=>c.Status" Title="Status" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.StorageLocation" Title="Storage Location" Sortable Filterable></PropertyColumn>
             <PropertyColumn Property="c=>c.ContactPerson" Title="Contact Person" Sortable Filterable></PropertyColumn>
-            <PropertyColumn Property="c=>c.PhotoUrl" Title="Photo"></PropertyColumn>
+            <PropertyColumn Property="c=>c.PhotoUrl" Title="Photo url" Sortable Filterable></PropertyColumn>
 
+            @if (UserService.LoggedUser.Role == Role.Coordinator || UserService.LoggedUser.Role == Role.Adminitrator)
+            {
             <ActionColumn Title="Action">
                 <Space Size=@("middle")>
                     <SpaceItem>
@@ -43,7 +50,7 @@ else
                     </SpaceItem>
                 </Space>
             </ActionColumn>
-
+            }
         </Table>
     }
 }

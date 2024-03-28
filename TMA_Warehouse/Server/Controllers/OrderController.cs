@@ -165,7 +165,7 @@ namespace WarehouseAPI.Controllers
                 {
                     foreach (OrderedItemDTO orderedItem in orderDto.OrderedItems)
                     {
-                        await itemController.UpdateAmount(orderedItem.ItemId, orderedItem.Quantity);
+                        await itemController.UpdateAmount(orderedItem.ItemId, context.Items.Where(x => x.Id == orderedItem.ItemId).First().Quantity - orderedItem.Quantity);
                     }
 
                     await ChangeOrderStatus(id, "Aproved");

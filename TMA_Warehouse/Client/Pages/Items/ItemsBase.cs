@@ -8,11 +8,17 @@ namespace TMA_Warehouse.Client.Pages.Items
     {
         [Inject] internal ItemService ItemService { get; set; }
         [Inject] internal NavigationManager NavigationManager { get; set; }
+        [Inject] internal UserService UserService { get; set; }
 
         internal IEnumerable<ItemDTO> Items { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
+            if (UserService.LoggedUser.Role == Role.Guest)
+            {
+                NavigationManager.NavigateTo("/");
+                return;
+            }
             Items = await ItemService.GetItems();
         }
 

@@ -45,9 +45,6 @@ namespace TMA_Warehouse.Client.Services
 
         public async Task<HttpResponseMessage> AddOrder(OrderDTO orderDTO)
         {
-            orderDTO.EmployeeName = "sus";
-            //Console.WriteLine($"{orderDTO.}")
-
             return await httpClient.PostAsJsonAsync<OrderDTO>($"api/Order/AddOrder", orderDTO);
         }
 

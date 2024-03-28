@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 using TMA_Warehouse.Server;
 using WarehouseAPI.Controllers;
@@ -32,7 +35,6 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapRazorPages();
 app.MapControllers();

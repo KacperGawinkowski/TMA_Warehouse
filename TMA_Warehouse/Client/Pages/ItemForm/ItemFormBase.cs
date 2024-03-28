@@ -24,10 +24,6 @@ namespace TMA_Warehouse.Client.Pages.ItemForm
         internal bool WasItemPassedInUri;
         internal string ApplyButtonText => WasItemPassedInUri ? "Update Item" : "Add Item";
 
-        internal FormValidationRule[] RuleRequired = new FormValidationRule[] { new FormValidationRule { Required = true, Message = "Field is required" } };
-        internal FormValidationRule[] MoneyRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
-        internal FormValidationRule[] QuantityRule = new FormValidationRule[] { new FormValidationRule { Required = true, Type = FormFieldType.Number, Min = 0.0001m } };
-
         protected override async Task OnInitializedAsync()
         {
             var uri = new Uri(NavigationManager.Uri);

@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Shared\TMA_Warehouse.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+
 </Project>
